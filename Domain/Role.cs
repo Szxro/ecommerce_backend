@@ -13,7 +13,5 @@ public  class Role : AuditableEntity
 
     public string Description { get; set; } = string.Empty;
 
-    public int UserId { get; set; }
-
     public ICollection<UserRoles> UserRoles { get; set; }
 }
