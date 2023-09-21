@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Domain
 {
@@ -8,7 +9,7 @@ namespace Domain
         {
             UserRoles = new HashSet<UserRoles>();
             UserOrders = new HashSet<Order>();
-            UserShippingInfos = new HashSet<UserShippingInfo>();
+            UserShippingInfos = new HashSet<ShippingInfo>();
         }
 
         public string Username { get; set; } = string.Empty;
@@ -33,6 +34,6 @@ namespace Domain
 
         public ICollection<Order> UserOrders { get; set; } // One to Many (Nullable)
 
-        public ICollection<UserShippingInfo> UserShippingInfos { get; set; } // One to Many (Required)
+        public ICollection<ShippingInfo> UserShippingInfos { get; set; } // One to Many (Required)
     }
 }
