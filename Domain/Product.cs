@@ -6,8 +6,8 @@ namespace Domain
     {
         public Product()
         {
-            ProductCategories = new HashSet<ProductCategory>();
-            ProductFiles = new HashSet<ProductFile>();
+            ProductCategories = new HashSet<ProductCategories>();
+            ProductFiles = new HashSet<ProductFiles>();
             Orders = new HashSet<Order>();
         }
 
@@ -21,9 +21,9 @@ namespace Domain
 
         public int ProductDiscount { get; set; }
 
-        public ICollection<ProductCategory> ProductCategories { get; set; } // Many to Many (Nullable)
+        public ICollection<ProductCategories> ProductCategories { get; set; } // Many to Many (Nullable)
 
-        public ICollection<ProductFile> ProductFiles { get; set; } // Many to One (Required)
+        public ICollection<ProductFiles> ProductFiles { get; set; } // Many to One (Required)
 
         public ICollection<Order> Orders { get; set; } // Many to One (Nullable)
     }
