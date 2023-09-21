@@ -9,7 +9,7 @@ public  class Role : AuditableEntity
         UserRoles = new HashSet<UserRoles>();    
     }
 
-    public string Name { get; set; } = string.Empty;
+    public string RoleName { get; set; } = string.Empty;
 
     public string Description { get; set; } = string.Empty;
 
