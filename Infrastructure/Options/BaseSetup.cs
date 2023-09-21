@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options; // (need to install the nugget Microsoft.Extensions.Configuration.Binder to use the Bind method)
 
 namespace Infrastructure.Options;
 
