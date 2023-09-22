@@ -1,7 +1,10 @@
-﻿using Infrastructure.Options.Database;
+﻿using Application.Common.Interfaces;
+using Infrastructure.Common;
+using Infrastructure.Options.Database;
 using Infrastructure.Options.Hash;
 using Infrastructure.Options.JWT;
 using Infrastructure.Persistence;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +32,24 @@ namespace Infrastructure
                 });
             });
 
+            // Adding Dependencies
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IAppDbInitializer, AppDbInitializer>();
+
             return services;
+        }
+
+        public static async Task InitializeDatabaseAsync(this WebApplication app)
+        {
+            //Creating a scope instance
+            using var scope = app.Services.CreateScope();
+
+            //Creating a service instance with the scope instance
+            var initializer = scope.ServiceProvider.GetRequiredService<IAppDbInitializer>();
+
+            await initializer.InitializeAsync();
+
+            await initializer.SeedAsync();
         }
     }
 }
