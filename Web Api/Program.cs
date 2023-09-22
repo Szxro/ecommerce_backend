@@ -22,6 +22,8 @@ var app = builder.Build();
     {
         app.UseSwagger();
         app.UseSwaggerUI();
+
+        await app.InitializeDatabaseAsync(); // Migrating and Seeding if its necessary
     }
 
     app.UseHttpsRedirection();
