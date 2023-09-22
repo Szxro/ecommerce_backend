@@ -4,7 +4,6 @@ namespace Domain;
 
 public class Order : AuditableEntity
 {
-    // Nullable UserId
     public DateTime ArriveDate { get; set; }
 
     public int ProductQuantity { get; set; }
