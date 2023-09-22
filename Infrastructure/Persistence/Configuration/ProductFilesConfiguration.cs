@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configuration;
 
-internal class ProductFilesConfiguration : IEntityTypeConfiguration<ProductFiles>
+public class ProductFilesConfiguration : IEntityTypeConfiguration<ProductFiles>
 {
     public void Configure(EntityTypeBuilder<ProductFiles> builder)
     {

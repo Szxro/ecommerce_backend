@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configuration;
 
-internal class AvatarConfiguration : IEntityTypeConfiguration<Avatar>
+public class AvatarConfiguration : IEntityTypeConfiguration<Avatar>
 {
     public void Configure(EntityTypeBuilder<Avatar> builder)
     {
