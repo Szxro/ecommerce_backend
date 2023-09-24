@@ -1,5 +1,6 @@
 ﻿using Domain.Common;
 using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Common;
 
@@ -25,5 +26,10 @@ public abstract class GenericRepository<TEntity> where TEntity : AuditableEntity
     public void Update(TEntity entity)
     {
         _context.Set<TEntity>().Update(entity);
+    }
+
+    public void ChangeTrackerToUnchanged(TEntity entity)
+    {
+        _context.Entry(entity).State = EntityState.Unchanged;
     }
 }
