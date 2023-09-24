@@ -40,6 +40,7 @@ namespace Infrastructure
             services.AddTransient<IPasswordService, PasswordService>();
             services.AddTransient<IDateService, DateService>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
 
             return services;
         }
