@@ -41,6 +41,7 @@ namespace Infrastructure
             services.AddTransient<IDateService, DateService>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddTransient<IUserRoleRepository, UserRoleRepository>();
 
             return services;
         }
