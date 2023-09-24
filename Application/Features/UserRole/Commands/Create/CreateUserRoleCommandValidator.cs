@@ -11,6 +11,6 @@ public class CreateUserRoleCommandValidator : AbstractValidator<CreateUserRoleCo
 
         RuleFor(userRole => userRole.username).NotEmpty().NotNull().WithMessage("The {PropertyName} cant be empty");
 
-        RuleFor(userRole => userRole.rolename).EmailAddress().WithMessage("The {PropertyName} need to be a valid email");
+        RuleFor(userRole => userRole.rolename).NotEmpty().WithMessage("The {PropertyName} cant be a valid email");
     }
 }
