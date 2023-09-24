@@ -37,6 +37,7 @@ namespace Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IAppDbInitializer, AppDbInitializer>();
             services.AddTransient<IPasswordService, PasswordService>();
+            services.AddTransient<IDateService, DateService>();
 
             return services;
         }
