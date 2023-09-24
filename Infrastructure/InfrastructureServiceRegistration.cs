@@ -4,6 +4,7 @@ using Infrastructure.Options.Database;
 using Infrastructure.Options.Hash;
 using Infrastructure.Options.JWT;
 using Infrastructure.Persistence;
+using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,7 @@ namespace Infrastructure
             services.AddTransient<IAppDbInitializer, AppDbInitializer>();
             services.AddTransient<IPasswordService, PasswordService>();
             services.AddTransient<IDateService, DateService>();
+            services.AddTransient<IUserRepository, UserRepository>();
 
             return services;
         }
