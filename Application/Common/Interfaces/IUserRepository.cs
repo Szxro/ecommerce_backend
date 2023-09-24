@@ -5,4 +5,6 @@ namespace Application.Common.Interfaces;
 public interface IUserRepository
 {
     Task<User?> GetUserById(int id);
+
+    void Add(User newUser);
 }
