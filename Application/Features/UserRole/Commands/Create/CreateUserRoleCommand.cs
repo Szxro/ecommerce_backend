@@ -35,6 +35,8 @@ public class CreateUserRoleCommandHandler : IRequestHandler<CreateUserRoleComman
 
         if (currentRole is null) throw new NotFoundException($"The role with the rolename <{request.rolename}> was not found");
 
+        if (currentUser.UserRoles.Any(role => role.Id == currentRole.Id)) throw new ArgumentException("The user already have that role");
+
         // Changing tracking to unchanged
 
         _userRepository.ChangeTrackerToUnchanged(currentUser);
