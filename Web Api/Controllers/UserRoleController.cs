@@ -18,7 +18,7 @@ namespace Web_Api.Controllers
 
         [HttpPost("userrole/addrole")]
 
-        public async Task<ActionResult<Unit>> AddUserRoleToUser(string username,string rolename = "User")
+        public async Task<ActionResult<Unit>> AddUserRoleToUser(string username,string rolename = "User") // Default role (User)
         {
             return await _mediator.Send(new CreateUserRoleCommand(username,rolename));
         } 
