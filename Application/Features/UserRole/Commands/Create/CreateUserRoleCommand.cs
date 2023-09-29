@@ -27,11 +27,11 @@ public class CreateUserRoleCommandHandler : IRequestHandler<CreateUserRoleComman
 
     public async Task<Unit> Handle(CreateUserRoleCommand request, CancellationToken cancellationToken)
     {
-        User? currentUser = await _userRepository.GetUserByUsername(request.username);
+        User? currentUser = await _userRepository.GetBy(x => x.Username == request.username,new List<string> { "UserRoles" });
 
         if (currentUser is null) throw new NotFoundException($"The username <{request.username}> was not found");
 
-        Role? currentRole = await _roleRepository.GetRoleByRoleName(request.rolename);
+        Role? currentRole = await _roleRepository.GetBy(x => x.RoleName == request.rolename);
 
         if (currentRole is null) throw new NotFoundException($"The role with the rolename <{request.rolename}> was not found");
 
