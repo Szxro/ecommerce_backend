@@ -1,6 +1,5 @@
 ﻿using Application.Features.Users.Commands.Create;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web_Api.Controllers
@@ -18,7 +17,7 @@ namespace Web_Api.Controllers
 
         [HttpPost("user/newuser")]
 
-        public async Task<ActionResult<Unit>> CreateNewUser(CreateUserCommand newUser)
+        public async Task<ActionResult<string>> CreateNewUser(CreateUserCommand newUser)
         {
             return Ok(await _mediator.Send(newUser));
         }
