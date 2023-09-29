@@ -1,6 +1,5 @@
 ﻿using Application.Features.UserRole.Commands.Create;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web_Api.Controllers
@@ -20,7 +19,7 @@ namespace Web_Api.Controllers
 
         public async Task<ActionResult<Unit>> AddUserRoleToUser(string username,string rolename = "User") // Default role (User)
         {
-            return await _mediator.Send(new CreateUserRoleCommand(username,rolename));
+            return Ok(await _mediator.Send(new CreateUserRoleCommand(username,rolename)));
         } 
     }
 }
