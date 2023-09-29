@@ -1,12 +1,13 @@
 ﻿using Domain;
+using System.Linq.Expressions;
 
 namespace Application.Common.Interfaces;
 
 public interface IRoleRepository
 {
-    Task<Role?> GetRoleByRoleName(string roleName);
-
     void Add(Role newRole);
 
     void ChangeTrackerToUnchanged(Role currentRole);
+
+    Task<Role?> GetBy(Expression<Func<Role,bool>> expression,ICollection<string>? includes = null);
 }
