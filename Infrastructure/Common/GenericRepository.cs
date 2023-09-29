@@ -1,6 +1,7 @@
 ﻿using Domain.Common;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Infrastructure.Common;
 
@@ -13,9 +14,29 @@ public abstract class GenericRepository<TEntity> where TEntity : AuditableEntity
         _context = context;
     }
 
+    public async Task<TEntity?> GetBy(Expression<Func<TEntity,bool>> expression,ICollection<string>? includes = null)
+    {
+        IQueryable<TEntity>? query = _context.Set<TEntity>();
+
+        if (includes is not null)
+        {
+            foreach (string entity in includes)
+            {
+                query = query.Include(entity);
+            }
+        }
+
+       return  await query.FirstOrDefaultAsync(expression);
+    }
+
     public void Add(TEntity entity)
     {
         _context.Set<TEntity>().Add(entity);  
+    }
+
+    public void AddRange(ICollection<TEntity> entities)
+    {
+        _context.Set<TEntity>().AddRange(entities);
     }
 
     public void Delete(TEntity entity)
