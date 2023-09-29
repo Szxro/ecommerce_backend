@@ -6,7 +6,7 @@ using Application.Common.Mapping;
 
 namespace Application.Features.Users.Commands.Create;
 
-public record CreateUserCommand : IRequest<Unit>
+public record CreateUserCommand : IRequest<string>
 {
     public string Fullname { get; set; } = string.Empty;
 
@@ -19,7 +19,7 @@ public record CreateUserCommand : IRequest<Unit>
     public string ConfirmPassword { get; set; } = string.Empty;
 }
 
-public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Unit>
+public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, string>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordService _passwordService;
@@ -35,7 +35,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Unit>
         _passwordService = passwordService;
         _user = user;
     }
-    public async Task<Unit> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         if (!CheckPasswordEquality(request.Password, request.ConfirmPassword)) throw new PasswordException("The password and confirm password must be equal");
 
@@ -49,7 +49,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Unit>
 
         await _unitOfWork.SaveChangesAsync();
 
-        return Unit.Value;
+        return newUser.Username;
     }
 
     private bool CheckPasswordEquality(string password,string confirmPassword) => password.Equals(confirmPassword);
