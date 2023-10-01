@@ -10,4 +10,6 @@ public interface IRoleRepository
     void ChangeTrackerToUnchanged(Role currentRole);
 
     Task<Role?> GetBy(Expression<Func<Role,bool>> expression,ICollection<string>? includes = null);
+
+    Task<ICollection<Role>> GetUserRoles(ICollection<int?> rolesId);
 }
