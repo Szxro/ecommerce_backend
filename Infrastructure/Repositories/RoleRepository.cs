@@ -11,4 +11,9 @@ public class RoleRepository : GenericRepository<Role>, IRoleRepository
     public RoleRepository(AppDbContext context) : base(context)
     {
     }
+
+    public async Task<ICollection<Role>> GetUserRoles(ICollection<int?> rolesId)
+    {
+        return await _context.Role.Where(role => rolesId.Contains(role.Id) && rolesId != null).ToListAsync();
+    }
 }
