@@ -37,11 +37,12 @@ namespace Infrastructure
             // Adding Dependencies 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IAppDbInitializer, AppDbInitializer>();
-            services.AddTransient<IPasswordService, PasswordService>();
-            services.AddTransient<IDateService, DateService>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
             services.AddTransient<IUserRoleRepository, UserRoleRepository>();
+            services.AddTransient<IPasswordService, PasswordService>();
+            services.AddTransient<IDateService, DateService>();
+            services.AddTransient<ITokenService, TokenService>();
 
             return services;
         }
