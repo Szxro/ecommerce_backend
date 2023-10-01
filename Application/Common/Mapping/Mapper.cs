@@ -1,11 +1,11 @@
-﻿using Application.Features.Users.Commands.Create;
+﻿using Application.Features.Users.Commands.Register;
 using Domain;
 
 namespace Application.Common.Mapping;
 
 public static class Mapper
 {
-    public static User ToUser(this CreateUserCommand newUser,string userHash, byte[] userSalt)
+    public static User ToUser(this RegisterUserCommand newUser,string userHash, byte[] userSalt)
     {
         return new User()
         {

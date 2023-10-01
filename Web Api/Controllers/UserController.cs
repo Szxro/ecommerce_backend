@@ -19,7 +19,7 @@ namespace Web_Api.Controllers
 
         [HttpPost("user/newuser")]
 
-        public async Task<ActionResult<string>> CreateNewUser(CreateUserCommand newUser)
+        public async Task<ActionResult<string>> CreateNewUser(RegisterUserCommand newUser)
         {
             return Ok(await _mediator.Send(newUser));
         }
