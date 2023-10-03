@@ -17,7 +17,7 @@ namespace Web_Api.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("user/newuser")]
+        [HttpPost("user/register")]
 
         public async Task<ActionResult<string>> CreateNewUser(RegisterUserCommand newUser)
         {
