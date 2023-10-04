@@ -1,5 +1,6 @@
 using Application;
 using Infrastructure;
+using Web_Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -7,10 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
+    builder.Services.AddInfrastructureAuthentication(builder.Configuration);
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
+    builder.Services.ConfigureSwagger();
     builder.Configuration.AddUserSecrets<Program>(optional: false, reloadOnChange: true); // Adding the user secrets
 }
 
