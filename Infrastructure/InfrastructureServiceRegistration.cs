@@ -6,11 +6,14 @@ using Infrastructure.Options.JWT;
 using Infrastructure.Persistence;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Infrastructure
 {
@@ -58,6 +61,34 @@ namespace Infrastructure
             await initializer.InitializeAsync();
 
             await initializer.SeedAsync();
+        }
+
+        public static IServiceCollection AddInfrastructureAuthentication(this IServiceCollection services,IConfiguration config)
+        {
+            //Adding the Authentication
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                //Validation parameters
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = config["JWTOptions:ValidIssuer"],
+                    ValidAudience = config["JWTOptions:ValidAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config["JWTOptions:SecretKey"]!)),
+                    ClockSkew = TimeSpan.FromSeconds(5) // must override (validating time) (default one is 5 min)
+                };
+            });
+
+            return services;
         }
     }
 }
