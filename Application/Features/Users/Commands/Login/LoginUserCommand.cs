@@ -38,7 +38,7 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, TokenRe
 
         bool isPasswordCorrect = _password.CompareUserHash(request.password,currentUserHash,currentUserSalt);
 
-        if (!isPasswordCorrect) throw new Exception("Incorrect password, try again");
+        if (!isPasswordCorrect) throw new PasswordException("Incorrect password, try again");
 
         //Generating the token and returning it as a response
 
