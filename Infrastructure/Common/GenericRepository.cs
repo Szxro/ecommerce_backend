@@ -14,7 +14,8 @@ public abstract class GenericRepository<TEntity> where TEntity : AuditableEntity
         _context = context;
     }
 
-    public async Task<TEntity?> GetBy(Expression<Func<TEntity,bool>> expression,ICollection<string>? includes = null)
+    public async Task<TEntity?> GetBy(Expression<Func<TEntity, bool>> expression,
+                                      ICollection<string>? includes = null)
     {
         IQueryable<TEntity>? query = _context.Set<TEntity>();
 
@@ -24,9 +25,13 @@ public abstract class GenericRepository<TEntity> where TEntity : AuditableEntity
             {
                 query = query.Include(entity);
             }
+
+            return await query.AsSplitQuery().AsNoTracking().FirstOrDefaultAsync(expression);
+            // AsSplitQurey => improve perfomance doing joins operations
+            // AsNotTracking => improve perfomance 
         }
 
-       return  await query.FirstOrDefaultAsync(expression);
+        return  await query.AsNoTracking().FirstOrDefaultAsync(expression);
     }
 
     public void Add(TEntity entity)
