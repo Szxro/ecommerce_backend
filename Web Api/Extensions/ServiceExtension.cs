@@ -1,5 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using Web_Api.Middleware;
 
 namespace Web_Api.Extensions;
 
@@ -24,4 +25,7 @@ public static class ServiceExtension
 
         return services;
     }
+
+
+    public static IServiceCollection AddExceptionMiddleware(this IServiceCollection services) => services.AddTransient<ExceptionMiddleware>();
 }
