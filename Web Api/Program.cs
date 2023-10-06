@@ -34,6 +34,8 @@ var app = builder.Build();
 
     app.UseHttpsRedirection();
 
+    app.UseAuthentication(); // Adding the authentication middleware
+
     app.UseAuthorization();
 
     app.MapControllers();
