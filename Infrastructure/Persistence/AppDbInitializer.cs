@@ -52,10 +52,79 @@ public class AppDbInitializer : IAppDbInitializer
     {
         if (!_context.Role.Any())
         {
+            // Defaults roles and privileges
             ICollection<Role> roles = new HashSet<Role>()
             {
-                new Role(){ RoleName = "User", Description = "Normal User"},
-                new Role(){RoleName = "Admin", Description = "Super User" }
+               new Role(){
+                   RoleName = "User",
+                   Description = "Normal User",
+                   RolePrivileges = new HashSet<RolePrivilege>()
+                   {
+                       new RolePrivilege(){
+                           Privilige = new Privilege()
+                           {
+                                PrivilegeName = "Write",
+                                Description = "User Write"
+                           }
+                       },
+                       new RolePrivilege(){
+                           Privilige = new Privilege()
+                           {
+                                PrivilegeName = "Read",
+                                Description = "User Read"
+                           }
+                       },
+                       new RolePrivilege(){
+                           Privilige = new Privilege()
+                           {
+                                PrivilegeName = "Update",
+                                Description = "User Update"
+                           }
+                       },
+                       new RolePrivilege(){
+                           Privilige = new Privilege()
+                           {
+                                PrivilegeName = "Delete",
+                                Description = "User Delete"
+                           }
+                       }
+                   }
+               },
+               new Role(){
+                   RoleName = "Admin",
+                   Description = "Super User",
+                   RolePrivileges = new HashSet<RolePrivilege>()
+                   {
+                        new RolePrivilege(){
+                           Privilige = new Privilege()
+                           {
+                                PrivilegeName = "WriteAdmin",
+                                Description = "Admin Write"
+                           }
+                       },
+                        new RolePrivilege(){
+                           Privilige = new Privilege()
+                           {
+                                PrivilegeName = "ReadAdmin",
+                                Description = "Admin Read"
+                           }
+                       },
+                        new RolePrivilege(){
+                           Privilige = new Privilege()
+                           {
+                                PrivilegeName = "UpdateAdmin",
+                                Description = "Admin Update"
+                           }
+                       },
+                        new RolePrivilege(){
+                           Privilige = new Privilege()
+                           {
+                                PrivilegeName = "DeleteAdmin",
+                                Description = "Admin Delete"
+                           }
+                       }
+                   }
+               }
             };
 
             _context.Role.AddRange(roles);
