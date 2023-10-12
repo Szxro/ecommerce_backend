@@ -1,10 +1,12 @@
+using Domain.Common.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web_Api.Filters;
 
 namespace Web_Api.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "User")]
+    [Authorize]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
@@ -20,6 +22,7 @@ namespace Web_Api.Controllers
             _logger = logger;
         }
 
+        [PrivilegeFilter(UserPrivilege.WriteAdmin)]
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
