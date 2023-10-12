@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddInfrastructure();
     builder.Services.AddInfrastructureAuthentication(builder.Configuration);
     builder.Services.AddControllers();
-    builder.Services.AddExceptionMiddleware(); // Registering the middleware (have to register because it use the IMiddleware interface)
+    builder.Services.RegisterMiddlewares(); // Registering the middleware (have to register because it use the IMiddleware interface)
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.ConfigureSwagger();
@@ -30,7 +30,8 @@ var app = builder.Build();
         await app.InitializeDatabaseAsync(); // Migrating and Seeding if its necessary
     }
 
-    app.UseMiddleware<ExceptionMiddleware>(); // Using the middleware
+    app.UseMiddleware<AuthorizationMiddleware>(); // Using the middleware (the organization count on who is going to run first) 
+    app.UseMiddleware<ExceptionMiddleware>(); 
 
     app.UseHttpsRedirection();
 
