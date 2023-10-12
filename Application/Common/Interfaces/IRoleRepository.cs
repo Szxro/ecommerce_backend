@@ -11,5 +11,5 @@ public interface IRoleRepository
 
     Task<Role?> GetBy(Expression<Func<Role,bool>> expression,ICollection<string>? includes = null);
 
-    Task<ICollection<Role>> GetUserRoles(ICollection<int?> rolesId);
+    Task<ICollection<string>> GetUserRoleNames(ICollection<int?> rolesId);
 }
