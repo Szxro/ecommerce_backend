@@ -39,6 +39,7 @@ namespace Infrastructure
 
             // Adding Dependencies 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
             services.AddTransient<IAppDbInitializer, AppDbInitializer>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
