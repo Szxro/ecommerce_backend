@@ -28,6 +28,22 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Privileges",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PrivilegeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Privileges", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Product",
                 columns: table => new
                 {
@@ -131,6 +147,32 @@ namespace Infrastructure.Migrations
                         principalTable: "Product",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RolePrivilege",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleId = table.Column<int>(type: "int", nullable: true),
+                    PrivilegeId = table.Column<int>(type: "int", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RolePrivilege", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RolePrivilege_Privileges_PrivilegeId",
+                        column: x => x.PrivilegeId,
+                        principalTable: "Privileges",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RolePrivilege_Role_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Role",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -318,6 +360,16 @@ namespace Infrastructure.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RolePrivilege_PrivilegeId",
+                table: "RolePrivilege",
+                column: "PrivilegeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePrivilege_RoleId",
+                table: "RolePrivilege",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ShippingInfo_UserId",
                 table: "ShippingInfo",
                 column: "UserId");
@@ -373,6 +425,9 @@ namespace Infrastructure.Migrations
                 name: "ProductFiles");
 
             migrationBuilder.DropTable(
+                name: "RolePrivilege");
+
+            migrationBuilder.DropTable(
                 name: "ShippingInfo");
 
             migrationBuilder.DropTable(
@@ -389,6 +444,9 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Product");
+
+            migrationBuilder.DropTable(
+                name: "Privileges");
 
             migrationBuilder.DropTable(
                 name: "Role");

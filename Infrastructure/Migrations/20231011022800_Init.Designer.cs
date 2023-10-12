@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230922004926_Init")]
+    [Migration("20231011022800_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -110,6 +110,33 @@ namespace Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Order");
+                });
+
+            modelBuilder.Entity("Domain.Privilege", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PrivilegeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Privileges");
                 });
 
             modelBuilder.Entity("Domain.Product", b =>
@@ -226,6 +253,35 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Role");
+                });
+
+            modelBuilder.Entity("Domain.RolePrivilege", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("PrivilegeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PrivilegeId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("RolePrivilege");
                 });
 
             modelBuilder.Entity("Domain.ShippingInfo", b =>
@@ -421,7 +477,7 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Domain.Common.Files", "File", b1 =>
+                    b.OwnsOne("Domain.Common.Owned.Files", "File", b1 =>
                         {
                             b1.Property<int>("AvatarId")
                                 .HasColumnType("int");
@@ -502,7 +558,7 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Domain.Common.Files", "File", b1 =>
+                    b.OwnsOne("Domain.Common.Owned.Files", "File", b1 =>
                         {
                             b1.Property<int>("ProductFilesId")
                                 .HasColumnType("int");
@@ -539,6 +595,21 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Domain.RolePrivilege", b =>
+                {
+                    b.HasOne("Domain.Privilege", "Privilige")
+                        .WithMany("RolePrivileges")
+                        .HasForeignKey("PrivilegeId");
+
+                    b.HasOne("Domain.Role", "Role")
+                        .WithMany("RolePrivileges")
+                        .HasForeignKey("RoleId");
+
+                    b.Navigation("Privilige");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Domain.ShippingInfo", b =>
@@ -594,6 +665,11 @@ namespace Infrastructure.Migrations
                     b.Navigation("ProductCategories");
                 });
 
+            modelBuilder.Entity("Domain.Privilege", b =>
+                {
+                    b.Navigation("RolePrivileges");
+                });
+
             modelBuilder.Entity("Domain.Product", b =>
                 {
                     b.Navigation("Orders");
@@ -605,6 +681,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Role", b =>
                 {
+                    b.Navigation("RolePrivileges");
+
                     b.Navigation("UserRoles");
                 });
 
