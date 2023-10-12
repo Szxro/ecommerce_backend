@@ -12,8 +12,10 @@ public class RoleRepository : GenericRepository<Role>, IRoleRepository
     {
     }
 
-    public async Task<ICollection<Role>> GetUserRoles(ICollection<int?> rolesId)
+    public async Task<ICollection<string>> GetUserRoleNames(ICollection<int?> rolesId)
     {
-        return await _context.Role.Where(role => rolesId.Contains(role.Id) && rolesId != null).ToListAsync();
+        return await _context.Role.Where(role => rolesId.Contains(role.Id) && rolesId !=null)
+                                  .Select(role => role.RoleName)
+                                  .ToListAsync();
     }
 }
