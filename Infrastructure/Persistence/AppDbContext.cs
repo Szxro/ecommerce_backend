@@ -1,10 +1,11 @@
-﻿using Domain;
+﻿using Application.Common.Interfaces;
+using Domain;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace Infrastructure.Persistence;
 
-public class AppDbContext : DbContext
+public class AppDbContext : DbContext,IAppDbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -29,6 +30,10 @@ public class AppDbContext : DbContext
     public DbSet<Role> Role => Set<Role>();
 
     public DbSet<UserRoles> UserRoles => Set<UserRoles>();
+
+    public DbSet<Privilege> Privileges => Set<Privilege>();
+
+    public DbSet<RolePrivilege> RolePrivilege => Set<RolePrivilege>();
 
     public DbSet<Product> Product => Set<Product>();
 
