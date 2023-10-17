@@ -8,10 +8,13 @@ namespace Infrastructure.Common;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _context;
+    private readonly IDateService _dateService;
 
-    public UnitOfWork(AppDbContext context)
+    public UnitOfWork(AppDbContext context,
+                      IDateService dateService)
     {
         _context = context;
+        _dateService = dateService;
     }
     public async Task SaveChangesAsync(CancellationToken cancellation = default)
     {
@@ -31,13 +34,13 @@ public class UnitOfWork : IUnitOfWork
         {
             if (entity.State == EntityState.Added)
             {
-               entity.Entity.CreatedAt = DateTime.UtcNow;
-               entity.Entity.ModifiedAt = DateTime.UtcNow;
+               entity.Entity.CreatedAt = _dateService.NowUTC;
+               entity.Entity.ModifiedAt = _dateService.NowUTC;
             }
 
             if (entity.State == EntityState.Modified)
             {
-                entity.Entity.ModifiedAt = DateTime.UtcNow;
+                entity.Entity.ModifiedAt = _dateService.NowUTC;
             }
         }
     }
