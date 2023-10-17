@@ -4,5 +4,5 @@ namespace Infrastructure.Services;
 
 public class DateService : IDateService
 {
-    public DateTime NowUTC() => DateTime.UtcNow;
+    public DateTime NowUTC => DateTime.UtcNow;
 }
