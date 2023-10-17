@@ -15,81 +15,90 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Infrastructure
+namespace Infrastructure;
+
+public static class InfrastructureServiceRegistration
 {
-    public static class InfrastructureServiceRegistration
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+        //Adding the Configuration
+        services.ConfigureOptions<DatabaseOptionsSetup>();
+        services.ConfigureOptions<HashOptionsSetup>();
+        services.ConfigureOptions<JwtOptionsSetup>();
+
+        services.AddDbContext<AppDbContext>((serviceProvider,options) =>
         {
-            //Adding the Configuration
-            services.ConfigureOptions<DatabaseOptionsSetup>();
-            services.ConfigureOptions<HashOptionsSetup>();
-            services.ConfigureOptions<JwtOptionsSetup>();
+            //Getting an instance of IOptions to use the options that are defined in appsettings.json (must be register and inherance from IOptions interface)
+            DatabaseOptions databaseOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
 
-            services.AddDbContext<AppDbContext>((serviceProvider,options) =>
+            options.UseSqlServer(databaseOptions.ConnectionString, sqlServerOptionsAction =>
             {
-                //Getting an instance of IOptions to use the options that are defined in appsettings.json (must be register and inherance from IOptions interface)
-                DatabaseOptions databaseOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
+                sqlServerOptionsAction.CommandTimeout(databaseOptions.CommandTimeout);// time to execute a command and generate an error
 
-                options.UseSqlServer(databaseOptions.ConnectionString, sqlServerOptionsAction =>
-                {
-                    sqlServerOptionsAction.EnableRetryOnFailure(databaseOptions.MaxRetryCount); // Max number of time to try to reconnect 
-                });
+                sqlServerOptionsAction.EnableRetryOnFailure(databaseOptions.MaxRetryCount); // Max number of time to try to reconnect 
             });
 
-            // Adding Dependencies 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
-            services.AddTransient<IAppDbInitializer, AppDbInitializer>();
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IRoleRepository, RoleRepository>();
-            services.AddTransient<IUserRoleRepository, UserRoleRepository>();
-            services.AddTransient<IPasswordService, PasswordService>();
-            services.AddTransient<IDateService, DateService>();
-            services.AddTransient<ITokenService, TokenService>();
+            // more detailed messages and logs (these options must only be active in dev)
+            options.EnableDetailedErrors(databaseOptions.EnableDetailedErrors); 
 
-            return services;
-        }
+            options.EnableSensitiveDataLogging(databaseOptions.EnableSensitiveDataLogging); 
 
-        public static async Task InitializeDatabaseAsync(this WebApplication app)
+            //Register and Adding the triggers from assembly
+            options.UseTriggers(triggersOptions => triggersOptions.AddAssemblyTriggers());
+        });
+
+        // Adding Dependencies to the DI Container
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
+        services.AddTransient<IAppDbInitializer, AppDbInitializer>();
+        services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<IRoleRepository, RoleRepository>();
+        services.AddTransient<IUserRoleRepository, UserRoleRepository>();
+        services.AddTransient<IPasswordService, PasswordService>();
+        services.AddTransient<IDateService, DateService>();
+        services.AddTransient<ITokenService, TokenService>();
+
+        return services;
+    }
+
+    public static async Task InitializeDatabaseAsync(this WebApplication app)
+    {
+        //Creating a scope instance
+        using var scope = app.Services.CreateScope();
+
+        //Creating a service instance with the scope instance
+        var initializer = scope.ServiceProvider.GetRequiredService<IAppDbInitializer>();
+
+        await initializer.InitializeAsync();
+
+        await initializer.SeedAsync();
+    }
+
+    public static IServiceCollection AddInfrastructureAuthentication(this IServiceCollection services,IConfiguration config)
+    {
+        //Adding the Authentication
+        services.AddAuthentication(options =>
         {
-            //Creating a scope instance
-            using var scope = app.Services.CreateScope();
-
-            //Creating a service instance with the scope instance
-            var initializer = scope.ServiceProvider.GetRequiredService<IAppDbInitializer>();
-
-            await initializer.InitializeAsync();
-
-            await initializer.SeedAsync();
-        }
-
-        public static IServiceCollection AddInfrastructureAuthentication(this IServiceCollection services,IConfiguration config)
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
         {
-            //Adding the Authentication
-            services.AddAuthentication(options =>
+            //Validation parameters
+            options.TokenValidationParameters = new TokenValidationParameters()
             {
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                //Validation parameters
-                options.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidateAudience = true,
-                    ValidateIssuer = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = config["JWTOptions:ValidIssuer"],
-                    ValidAudience = config["JWTOptions:ValidAudience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config["JWTOptions:SecretKey"]!)),
-                    ClockSkew = TimeSpan.FromSeconds(5) // must override (validating time) (default one is 5 min)
-                };
-            });
+                ValidateAudience = true,
+                ValidateIssuer = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = config["JWTOptions:ValidIssuer"],
+                ValidAudience = config["JWTOptions:ValidAudience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config["JWTOptions:SecretKey"]!)),
+                ClockSkew = TimeSpan.FromSeconds(5) // must override (validating time) (default one is 5 min)
+            };
+        });
 
-            return services;
-        }
+        return services;
     }
 }
