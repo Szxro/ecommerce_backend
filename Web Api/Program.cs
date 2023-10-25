@@ -27,7 +27,7 @@ var app = builder.Build();
         app.UseSwagger();
         app.UseSwaggerUI();
 
-        await app.InitializeDatabaseAsync(); // Migrating and Seeding if its necessary
+        await app.Services.InitializeDatabaseAsync(); // Migrating and Seeding if its necessary
     }
 
     app.UseMiddleware<AuthorizationMiddleware>(); // Using the middleware (the organization count on who is going to run first) 

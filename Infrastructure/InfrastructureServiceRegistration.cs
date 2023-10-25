@@ -61,15 +61,20 @@ public static class InfrastructureServiceRegistration
         return services;
     }
 
-    public static async Task InitializeDatabaseAsync(this WebApplication app)
+    public static async Task InitializeDatabaseAsync(this IServiceProvider serviceProvider)
     {
         //Creating a scope instance
-        using var scope = app.Services.CreateScope();
+        using var scope = serviceProvider.CreateScope();
 
         //Creating a service instance with the scope instance
         var initializer = scope.ServiceProvider.GetRequiredService<IAppDbInitializer>();
 
-        await initializer.InitializeAsync();
+        //Running the methods
+        await initializer.ConnectAsync();
+
+        await initializer.EnsuredDatabaseCreated();
+
+        await initializer.MigrateAsync();
 
         await initializer.SeedAsync();
     }
