@@ -2,7 +2,11 @@
 
 public interface IAppDbInitializer
 {
-    Task InitializeAsync();
+    Task MigrateAsync();
 
     Task SeedAsync();
+
+    Task ConnectAsync();
+
+    Task EnsuredDatabaseCreated();
 }

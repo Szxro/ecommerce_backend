@@ -20,7 +20,31 @@ public class AppDbInitializer : IAppDbInitializer
         _unitOfWork = unitOfWork;
         _context = context;
     }
-    public async Task InitializeAsync()
+
+    public async Task ConnectAsync()
+    {
+        try 
+        {
+            await _context.Database.CanConnectAsync(); // Determines whether the database is avaliable
+        } catch (Exception ex)
+        {
+            _logger.LogError("An error occured trying to connect to the database <{database}> : <{message}>", _context.Database.ProviderName, ex.Message);
+        }
+    }
+
+    public async Task EnsuredDatabaseCreated()
+    {
+        try 
+        {
+            await _context.Database.EnsureCreatedAsync(); // check the database have any table and the database exists
+
+        } catch (Exception ex)
+        {
+           _logger.LogError("An error occured trying check if the database have any table <{database}> : <{message}>", _context.Database.ProviderName, ex.Message);
+        }
+    }
+
+    public async Task MigrateAsync()
     {
         try
         {
