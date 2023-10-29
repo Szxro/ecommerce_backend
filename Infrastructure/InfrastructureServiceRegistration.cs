@@ -8,9 +8,11 @@ using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -19,7 +21,8 @@ namespace Infrastructure;
 
 public static class InfrastructureServiceRegistration
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services,
+                                                       IWebHostEnvironment environment)
     {
         //Adding the Configuration
         services.ConfigureOptions<DatabaseOptionsSetup>();
@@ -38,10 +41,13 @@ public static class InfrastructureServiceRegistration
                 sqlServerOptionsAction.EnableRetryOnFailure(databaseOptions.MaxRetryCount); // Max number of time to try to reconnect 
             });
 
-            // more detailed messages and logs (these options must only be active in dev)
-            options.EnableDetailedErrors(databaseOptions.EnableDetailedErrors); 
+            if (environment.IsDevelopment()) // can check if the enviroment is in production
+            {
+                // more detailed messages and logs (these options must only be active in dev)
+                options.EnableDetailedErrors(databaseOptions.EnableDetailedErrors);
 
-            options.EnableSensitiveDataLogging(databaseOptions.EnableSensitiveDataLogging); 
+                options.EnableSensitiveDataLogging(databaseOptions.EnableSensitiveDataLogging);
+            }
 
             //Register and Adding the triggers from assembly
             options.UseTriggers(triggersOptions => triggersOptions.AddAssemblyTriggers());

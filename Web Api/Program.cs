@@ -6,9 +6,8 @@ using Web_Api.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 {
     // Add services to the container.
-
     builder.Services.AddApplication();
-    builder.Services.AddInfrastructure();
+    builder.Services.AddInfrastructure(builder.Environment);
     builder.Services.AddInfrastructureAuthentication(builder.Configuration);
     builder.Services.AddControllers();
     builder.Services.RegisterMiddlewares(); // Registering the middleware (have to register because it use the IMiddleware interface)
