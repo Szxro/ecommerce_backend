@@ -52,6 +52,9 @@ public static class InfrastructureServiceRegistration
             options.UseTriggers(triggersOptions => triggersOptions.AddAssemblyTriggers());
         });
 
+        // Adding the HttpContext
+        services.AddHttpContextAccessor();
+
         // Adding Dependencies to the DI Container
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
@@ -62,6 +65,7 @@ public static class InfrastructureServiceRegistration
         services.AddTransient<IPasswordService, PasswordService>();
         services.AddTransient<IDateService, DateService>();
         services.AddTransient<ITokenService, TokenService>();
+        services.AddTransient<ICurrentUserService, CurrentUserService>();
 
         return services;
     }
