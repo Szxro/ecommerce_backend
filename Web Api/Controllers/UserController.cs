@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Web_Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -27,7 +27,7 @@ namespace Web_Api.Controllers
         [HttpPost("user/login")]
         public async Task<ActionResult<TokenResponse>> LoginUser(string username,string password)
         {
-            return await _mediator.Send(new LoginUserCommand(username,password));
+            return Ok(await _mediator.Send(new LoginUserCommand(username, password)));
         }
     }
 }

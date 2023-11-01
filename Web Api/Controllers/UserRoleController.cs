@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Web_Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1")]
     [ApiController]
     public class UserRoleController : ControllerBase
     {
@@ -15,7 +15,7 @@ namespace Web_Api.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("userrole/addrole")]
+        [HttpPost("user/addrole")]
 
         public async Task<ActionResult<Unit>> AddUserRoleToUser(string username,string rolename = "User") // Default role (User)
         {
