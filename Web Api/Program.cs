@@ -30,13 +30,14 @@ var app = builder.Build();
     }
 
     app.UseMiddleware<AuthorizationMiddleware>(); // Using the middleware (the organization count on who is going to run first) 
-    app.UseMiddleware<ExceptionMiddleware>(); 
 
     app.UseHttpsRedirection();
 
     app.UseAuthentication(); // Adding the authentication middleware
 
     app.UseAuthorization();
+
+    app.UseMiddleware<ExceptionMiddleware>(); 
 
     app.MapControllers();
 
