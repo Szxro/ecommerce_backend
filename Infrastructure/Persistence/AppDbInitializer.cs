@@ -2,6 +2,7 @@
 using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Application.Extensions;
 
 namespace Infrastructure.Persistence;
 
@@ -28,7 +29,7 @@ public class AppDbInitializer : IAppDbInitializer
             await _context.Database.CanConnectAsync(); // Determines whether the database is avaliable
         } catch (Exception ex)
         {
-            _logger.LogError("An error occured trying to connect to the database <{database}> : <{message}>", _context.Database.ProviderName, ex.Message);
+            _logger.ConnectDatabaseError(_context.Database.ProviderName, ex.Message);
         }
     }
 
@@ -40,7 +41,7 @@ public class AppDbInitializer : IAppDbInitializer
 
         } catch (Exception ex)
         {
-           _logger.LogError("An error occured trying check if the database have any table <{database}> : <{message}>", _context.Database.ProviderName, ex.Message);
+            _logger.DatabaseCreatedError(_context.Database.ProviderName, ex.Message);
         }
     }
 
@@ -52,7 +53,7 @@ public class AppDbInitializer : IAppDbInitializer
         }
         catch (Exception ex)
         {
-            _logger.LogError("An error occured trying to do migration to the database <{database}> : <{message}>",_context.Database.ProviderName,ex.Message);
+            _logger.MigrateDatabaseError(_context.Database.ProviderName, ex.Message);
 
             throw;
         }
@@ -66,7 +67,7 @@ public class AppDbInitializer : IAppDbInitializer
 
         } catch (Exception ex)
         {
-            _logger.LogError("An error ocurred trying to seed the database <{message}>",ex.Message);
+            _logger.SeedDatabaseError(ex.Message);
 
             throw;
         }
