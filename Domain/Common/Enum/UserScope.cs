@@ -1,6 +1,6 @@
 ﻿namespace Domain.Common.Enum;
 
-public enum UserPrivilege
+public enum UserScope
 {
     Write,
     Read,
