@@ -30,7 +30,6 @@ public static class ServiceExtension
     public static IServiceCollection RegisterMiddlewares(this IServiceCollection services)
     {
         services.AddTransient<ExceptionMiddleware>();
-        services.AddTransient<AuthorizationMiddleware>();
 
         return services;
     }
