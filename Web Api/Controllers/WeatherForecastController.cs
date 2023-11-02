@@ -23,7 +23,7 @@ namespace Web_Api.Controllers
             _logger = logger;
         }
 
-        [PrivilegeFilter(UserPrivilege.WriteAdmin)]
+        [PrivilegeFilter(UserScope.WriteAdmin)]
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
