@@ -29,15 +29,13 @@ var app = builder.Build();
         await app.Services.InitializeDatabaseAsync(); // Migrating and Seeding if its necessary
     }
 
-    app.UseMiddleware<AuthorizationMiddleware>(); // Using the middleware (the organization count on who is going to run first) 
-
     app.UseHttpsRedirection();
 
     app.UseAuthentication(); // Adding the authentication middleware
 
     app.UseAuthorization();
 
-    app.UseMiddleware<ExceptionMiddleware>(); 
+    app.UseMiddleware<ExceptionMiddleware>(); // Using the middleware (the organization count on who is going to run first) 
 
     app.MapControllers();
 
