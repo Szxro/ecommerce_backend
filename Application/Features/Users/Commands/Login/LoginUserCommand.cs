@@ -24,7 +24,7 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, TokenRe
     }
     public async Task<TokenResponse> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        User? currentUser = await _user.GetBy(user => user.Username == request.username, new List<string>() { "UserRoles", "UserHash", "UserSalt" });
+        User? currentUser = await _user.GetUserClaimsByUsername(request.username,cancellationToken);
 
         if (currentUser is null) throw new NotFoundException($"The username <{request.username}> was not found");
 
@@ -41,9 +41,6 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, TokenRe
         if (!isPasswordCorrect) throw new PasswordException("Incorrect password, try again");
 
         //Generating the token and returning it as a response
-
-        string tokenResponse = await _tokenService.GenerateToken(currentUser);
-
-        return new TokenResponse(tokenResponse);
+        return new TokenResponse(_tokenService.GenerateToken(currentUser));
     }
 }
