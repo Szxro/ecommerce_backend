@@ -57,10 +57,10 @@ public static class InfrastructureServiceRegistration
 
         // Adding Dependencies to the DI Container
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
         services.AddTransient<IAppDbInitializer, AppDbInitializer>();
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<IRoleRepository, RoleRepository>();
+        services.AddTransient<IRolePrivilegeRepository, RolePrivilegeRepository>();
         services.AddTransient<IUserRoleRepository, UserRoleRepository>();
         services.AddTransient<IPasswordService, PasswordService>();
         services.AddTransient<IDateService, DateService>();
