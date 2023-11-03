@@ -3,4 +3,6 @@
 public interface IDateService
 {
     DateTime NowUTC { get; }
+
+    DateTime TimeStampToUTCDate(long timeStamp);
 }
