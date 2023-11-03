@@ -1,5 +1,4 @@
 ﻿using Domain;
-using System.Linq.Expressions;
 
 namespace Application.Common.Interfaces;
 
@@ -9,7 +8,7 @@ public interface IRoleRepository
 
     void ChangeTrackerToUnchanged(Role currentRole);
 
-    Task<Role?> GetBy(Expression<Func<Role,bool>> expression,ICollection<string>? includes = null);
+    Task<int> CountRolesAsync(List<string> roles, CancellationToken cancellationToken = default);
 
-    Task<ICollection<string>> GetUserRoleNames(ICollection<int?> rolesId);
+    Task<Role> GetRoleByRoleName(string roleName, CancellationToken cancellationToken = default);
 }

@@ -2,6 +2,7 @@
 using Domain;
 using Infrastructure.Common;
 using Infrastructure.Persistence;
+using Infrastructure.Specifications;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
@@ -12,10 +13,22 @@ public class RoleRepository : GenericRepository<Role>, IRoleRepository
     {
     }
 
-    public async Task<ICollection<string>> GetUserRoleNames(ICollection<int?> rolesId)
+    public async Task<int> CountRolesAsync(List<string> roles,CancellationToken cancellationToken = default)
     {
-        return await _context.Role.Where(role => rolesId.Contains(role.Id) && rolesId !=null)
-                                  .Select(role => role.RoleName)
-                                  .ToListAsync();
+        return await ApplySpecification(new CountRolesSpecification(roles))
+                                        .Select(role => role.RoleName)
+                                        .Distinct()
+                                        .CountAsync(cancellationToken);
+    }
+
+    public async Task<Role> GetRoleByRoleName(string roleName,CancellationToken cancellationToken = default)
+    {
+        return await ApplySpecification(new GetRoleByRoleNameSpecification(roleName))
+                                        .Select(role => new Role()
+                                        {
+                                            Id = role.Id,
+                                            RoleName = role.RoleName
+                                        })
+                                        .FirstAsync(cancellationToken);
     }
 }
