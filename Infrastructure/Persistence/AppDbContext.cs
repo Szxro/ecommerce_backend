@@ -1,11 +1,10 @@
-﻿using Application.Common.Interfaces;
-using Domain;
+﻿using Domain;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace Infrastructure.Persistence;
 
-public class AppDbContext : DbContext,IAppDbContext
+public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
