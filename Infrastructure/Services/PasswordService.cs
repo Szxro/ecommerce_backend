@@ -1,6 +1,5 @@
 ﻿using Application.Common.Interfaces;
 using Infrastructure.Options.Hash;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
 

@@ -25,9 +25,11 @@ namespace Web_Api.Controllers
         }
 
         [HttpPost("user/login")]
-        public async Task<ActionResult<TokenResponse>> LoginUser(string username,string password)
+        public async Task<ActionResult<TokenResponse>> LoginUser(string username,
+                                                                 string password,
+                                                                 CancellationToken cancellationToken = default)
         {
-            return Ok(await _mediator.Send(new LoginUserCommand(username, password)));
+            return Ok(await _mediator.Send(new LoginUserCommand(username, password),cancellationToken));
         }
     }
 }

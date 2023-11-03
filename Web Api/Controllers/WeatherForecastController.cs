@@ -1,4 +1,3 @@
-using Application.Common.Interfaces;
 using Domain.Common.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
