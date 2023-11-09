@@ -42,7 +42,7 @@ public abstract class GenericRepository<TEntity> where TEntity : AuditableEntity
         // return how many rows were affected by the update
         return _context.Set<TEntity>().Where(whereExpression).ExecuteUpdateAsync(propertiesExpression);
 
-        // properties expression are specifies a property and corresponding value (its used by the execute update method) 
+        // properties expression are those who specifies a property and its corresponding value (its used by the execute update method) 
     }
 
     public void ChangeTrackerToUnchanged(TEntity entity)
