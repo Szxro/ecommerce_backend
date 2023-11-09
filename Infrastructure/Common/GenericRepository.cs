@@ -1,6 +1,8 @@
 ﻿using Domain.Common;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+using System.Linq.Expressions;
 
 namespace Infrastructure.Common;
 
@@ -28,14 +30,19 @@ public abstract class GenericRepository<TEntity> where TEntity : AuditableEntity
         _context.Set<TEntity>().AddRange(entities);
     }
 
-    public void Delete(TEntity entity)
+    public Task DeleteByAsync(Expression<Func<TEntity,bool>> expression)
     {
-        _context.Set<TEntity>().Remove(entity);
+        // return how many rows where deleted
+        return _context.Set<TEntity>().Where(expression).ExecuteDeleteAsync();
     }
 
-    public void Update(TEntity entity)
+    public Task UpdateByAsync(Expression<Func<TEntity, bool>> whereExpression,
+                              Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> propertiesExpression)
     {
-        _context.Set<TEntity>().Update(entity);
+        // return how many rows were affected by the update
+        return _context.Set<TEntity>().Where(whereExpression).ExecuteUpdateAsync(propertiesExpression);
+
+        // properties expression are specifies a property and corresponding value (its used by the execute update method) 
     }
 
     public void ChangeTrackerToUnchanged(TEntity entity)
