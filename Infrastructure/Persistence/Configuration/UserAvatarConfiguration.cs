@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configuration;
 
-public class AvatarConfiguration : IEntityTypeConfiguration<Avatar>
+public class UserAvatarConfiguration : IEntityTypeConfiguration<UserAvatar>
 {
-    public void Configure(EntityTypeBuilder<Avatar> builder)
+    public void Configure(EntityTypeBuilder<UserAvatar> builder)
     {
         builder.OwnsOne(x => x.File, options =>
         {
