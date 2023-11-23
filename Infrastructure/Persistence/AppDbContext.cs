@@ -16,31 +16,54 @@ public class AppDbContext : DbContext
         base.OnModelCreating(modelBuilder);
     }
 
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder.Properties<DateTime>().HaveColumnType("datetime2");
+
+        base.ConfigureConventions(configurationBuilder);
+    }
+
     public DbSet<User> User => Set<User>();
 
     public DbSet<UserHash> UserHash => Set<UserHash>();
 
-    public DbSet<UserSalt> UserSalt => Set<UserSalt>();
+    public DbSet<UserSalt> UserSalt => Set<UserSalt>(); 
 
-    public DbSet<ShippingInfo> ShippingInfo => Set<ShippingInfo>(); 
+    public DbSet<UserAvatar> UserAvatar => Set<UserAvatar>();
 
-    public DbSet<Avatar> Avatar => Set<Avatar>();
+    public DbSet<Address> Address => Set<Address>();
 
+    public DbSet<Country> Country => Set<Country>();
+
+    public DbSet<UserAddress> UserAddress => Set<UserAddress>();
+ 
     public DbSet<Role> Role => Set<Role>();
 
     public DbSet<UserRoles> UserRoles => Set<UserRoles>();
 
-    public DbSet<Privilege> Privileges => Set<Privilege>();
+    public DbSet<Scope> Scope => Set<Scope>();
 
-    public DbSet<RolePrivilege> RolePrivilege => Set<RolePrivilege>();
+    public DbSet<RoleScope> RoleScope => Set<RoleScope>();
 
     public DbSet<Product> Product => Set<Product>();
 
-    public DbSet<Categories> Categories => Set<Categories>();
-
-    public DbSet<ProductCategories> ProductCategories => Set<ProductCategories>();
+    public DbSet<ProductItem> ProductItem => Set<ProductItem>();
 
     public DbSet<ProductFiles> ProductFiles => Set<ProductFiles>(); 
 
+    public DbSet<Category> Category => Set<Category>();
+
+    public DbSet<ProductCategory> ProductCategory => Set<ProductCategory>();
+
     public DbSet<Order> Order => Set<Order>();
+
+    public DbSet<UserPaymentMethod> UserPaymentMethods => Set<UserPaymentMethod>();
+
+    public DbSet<PaymentType> PaymentType => Set<PaymentType>();
+
+    public DbSet<Provider> Provider => Set<Provider>();
+
+    public DbSet<ShippingMethod> ShippingMethod => Set<ShippingMethod>();
+
+    public DbSet<OrderStatus> OrderStatus => Set<OrderStatus>();
 }
