@@ -11,15 +11,18 @@ public class AppDbInitializer : IAppDbInitializer
     private readonly ILogger<AppDbInitializer> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly AppDbContext _context;
+    private readonly IRoleRepository _roleRepository;
 
     public AppDbInitializer(
         ILogger<AppDbInitializer> logger,
         IUnitOfWork unitOfWork,
-        AppDbContext context)
+        AppDbContext context,
+        IRoleRepository roleRepository)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _context = context;
+        _roleRepository = roleRepository;
     }
 
     public async Task ConnectAsync()
@@ -63,7 +66,7 @@ public class AppDbInitializer : IAppDbInitializer
     {
         try
         {
-            await TrySeedAsync();
+            await TrySeedRolesAndScopeAsync();
 
         } catch (Exception ex)
         {
@@ -73,88 +76,11 @@ public class AppDbInitializer : IAppDbInitializer
         }
     }
 
-    private async Task TrySeedAsync()
+    private async Task TrySeedRolesAndScopeAsync()
     {
         if (!_context.Role.Any())
         {
-            // Defaults roles and privileges
-            ICollection<Role> roles = new HashSet<Role>()
-            {
-               new Role(){
-                   RoleName = "User",
-                   Description = "Normal User",
-                   RolePrivileges = new HashSet<RolePrivilege>()
-                   {
-                       new RolePrivilege(){
-                           Privilige = new Privilege()
-                           {
-                                PrivilegeName = "Write",
-                                Description = "User Write"
-                           }
-                       },
-                       new RolePrivilege(){
-                           Privilige = new Privilege()
-                           {
-                                PrivilegeName = "Read",
-                                Description = "User Read"
-                           }
-                       },
-                       new RolePrivilege(){
-                           Privilige = new Privilege()
-                           {
-                                PrivilegeName = "Update",
-                                Description = "User Update"
-                           }
-                       },
-                       new RolePrivilege(){
-                           Privilige = new Privilege()
-                           {
-                                PrivilegeName = "Delete",
-                                Description = "User Delete"
-                           }
-                       }
-                   }
-               },
-               new Role(){
-                   RoleName = "Admin",
-                   Description = "Super User",
-                   RolePrivileges = new HashSet<RolePrivilege>()
-                   {
-                        new RolePrivilege(){
-                           Privilige = new Privilege()
-                           {
-                                PrivilegeName = "WriteAdmin",
-                                Description = "Admin Write"
-                           }
-                       },
-                        new RolePrivilege(){
-                           Privilige = new Privilege()
-                           {
-                                PrivilegeName = "ReadAdmin",
-                                Description = "Admin Read"
-                           }
-                       },
-                        new RolePrivilege(){
-                           Privilige = new Privilege()
-                           {
-                                PrivilegeName = "UpdateAdmin",
-                                Description = "Admin Update"
-                           }
-                       },
-                        new RolePrivilege(){
-                           Privilige = new Privilege()
-                           {
-                                PrivilegeName = "DeleteAdmin",
-                                Description = "Admin Delete"
-                           }
-                       }
-                   }
-               }
-            };
-
-            _context.Role.AddRange(roles);
-
-            await _unitOfWork.SaveChangesAsync();
+            await _roleRepository.AddDefaultRolesAndScope();
         }
     }
 }
