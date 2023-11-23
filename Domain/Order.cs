@@ -10,9 +10,29 @@ public class Order : AuditableEntity
 
     public int UserId { get; set; }
 
-    public User User { get; set; } = new();
+    public User User { get; set; } = new(); // One to Many (Required)
 
-    public int ProductId { get; set; }
+    public int? ProductId { get; set; } 
 
-    public Product Product { get; set; } = new();
+    public Product? Product { get; set; } = new(); // One to Many (Non-Required)
+
+    public DateTime OrderDate { get; set; }
+
+    public int? UserPaymentMethodId { get; set; }
+
+    public UserPaymentMethod? UserPaymentMethod { get; set; } = new(); // One to Many (Non-Required)
+
+    public int AddressId { get; set; }
+
+    public Address Address { get; set; } = new(); // One to Many (Required)
+
+    public int? ShippingMethodId { get; set; }
+
+    public ShippingMethod? ShippingMethod { get; set; } = new();
+
+    public int? OrderStatusId { get; set; }
+
+    public OrderStatus? OrderStatus { get; set; } = new(); // One to Many (Non-Required)
+
+    public double OrderTotal { get; set; }
 }

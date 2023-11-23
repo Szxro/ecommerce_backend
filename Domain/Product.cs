@@ -6,25 +6,21 @@ namespace Domain
     {
         public Product()
         {
-            ProductCategories = new HashSet<ProductCategories>();
-            ProductFiles = new HashSet<ProductFiles>();
+            ProductCategories = new HashSet<ProductCategory>();
+            ProductItems = new HashSet<ProductItem>();
             Orders = new HashSet<Order>();
         }
 
-        public string ProductName { get; set; } = null!;
+        public string ProductName { get; set; } = string.Empty;
 
-        public string Description { get; set; } = null!;
+        public string Description { get; set; } = string.Empty;
 
-        public double ProductPrice { get; set; }
+        public string ProductImagePath { get; set; } = string.Empty;
 
-        public int ProductQuantity { get; set; }
+        public ICollection<ProductCategory> ProductCategories { get; set; } // One to Many (Required)
 
-        public int ProductDiscount { get; set; }
+        public ICollection<ProductItem> ProductItems { get; set; } 
 
-        public ICollection<ProductCategories> ProductCategories { get; set; } // Many to Many (Nullable)
-
-        public ICollection<ProductFiles> ProductFiles { get; set; } // Many to One (Required)
-
-        public ICollection<Order> Orders { get; set; } // Many to One (Nullable)
+        public ICollection<Order> Orders { get; set; }
     }
 }

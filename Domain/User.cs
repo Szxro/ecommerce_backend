@@ -7,8 +7,9 @@ namespace Domain
         public User()
         {
             UserRoles = new HashSet<UserRoles>();
-            UserOrders = new HashSet<Order>();
-            UserShippingInfos = new HashSet<ShippingInfo>();
+            Orders = new HashSet<Order>();
+            Addresses = new HashSet<UserAddress>();
+            PaymentMethods = new HashSet<UserPaymentMethod>();
         }
 
         public string Username { get; set; } = string.Empty;
@@ -23,7 +24,7 @@ namespace Domain
 
         public int AccessFailedCount { get; set; } = 0; // Default 0
 
-        public Avatar? Avatar { get; set; } // One to One (Required)
+        public UserAvatar? UserAvatar { get; set; } // One to One (Required)
 
         public UserHash? UserHash { get; set; } // One to One (Required)
 
@@ -31,8 +32,10 @@ namespace Domain
 
         public ICollection<UserRoles> UserRoles { get; set; } // One to Many (Nullable)
 
-        public ICollection<Order> UserOrders { get; set; } // One to Many (Nullable)
+        public ICollection<UserAddress> Addresses { get; set; } // Many to One (Required)
 
-        public ICollection<ShippingInfo> UserShippingInfos { get; set; } // One to Many (Required)
+        public ICollection<UserPaymentMethod> PaymentMethods { get; set; }
+
+        public ICollection<Order> Orders { get; set; } // One to Many (Required)
     }
 }

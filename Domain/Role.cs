@@ -7,7 +7,7 @@ public  class Role : AuditableEntity
     public Role()
     {
         UserRoles = new HashSet<UserRoles>();
-        RolePrivileges = new HashSet<RolePrivilege>();
+        Scopes = new HashSet<RoleScope>();
     }
 
     public string RoleName { get; set; } = string.Empty;
@@ -16,5 +16,5 @@ public  class Role : AuditableEntity
 
     public ICollection<UserRoles> UserRoles { get; set; }
 
-    public ICollection<RolePrivilege> RolePrivileges { get; set; }
+    public ICollection<RoleScope> Scopes { get; set; }
 }
