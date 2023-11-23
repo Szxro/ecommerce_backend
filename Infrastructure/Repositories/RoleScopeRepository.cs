@@ -19,7 +19,7 @@ public class RoleScopeRepository : GenericRepository<RoleScope>, IRoleScopeRepos
                                                       UserScope userScope,
                                                       CancellationToken cancellationToken = default)
     {
-        return await ApplySpecification(new CombinationRoleNameAndPrivilegeSpecification(roles, rolesScope))
+        return await ApplySpecification(new CombinationRoleNameAndScopeSpecification(roles, rolesScope))
                                         .AnyAsync(roleScope => roleScope.Scope!.ScopeName == rolesScope[userScope],cancellationToken);
     }
 }
