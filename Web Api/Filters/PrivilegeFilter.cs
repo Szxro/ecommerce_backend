@@ -37,7 +37,7 @@ public class PrivilegeFilter : Attribute, IAsyncAuthorizationFilter
         if (allowAnonymous) await Task.CompletedTask;
 
         //Getting an instance of the following repositories
-        IRolePrivilegeRepository? rolePrivilege = context.HttpContext.RequestServices.GetRequiredService<IRolePrivilegeRepository>();
+        IRoleScopeRepository? rolePrivilege = context.HttpContext.RequestServices.GetRequiredService<IRoleScopeRepository>();
 
         IRoleRepository roleRepository = context.HttpContext.RequestServices.GetRequiredService<IRoleRepository>();
 
@@ -53,7 +53,7 @@ public class PrivilegeFilter : Attribute, IAsyncAuthorizationFilter
     }
 
     private async Task<bool> ValidateRolePrivilige(List<string> roles,
-                                                   IRolePrivilegeRepository? rolePrivilege,
+                                                   IRoleScopeRepository? rolePrivilege,
                                                    IRoleRepository? roleRepository)
     {
         if (rolePrivilege is null || roleRepository is null || !roles.Any()) return false;
