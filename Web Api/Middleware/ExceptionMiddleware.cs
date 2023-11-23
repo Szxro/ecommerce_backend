@@ -21,6 +21,7 @@ public class ExceptionMiddleware : IMiddleware
 
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
+        //Tuple
         (int httpStatusCode,string message) exceptionResult = MapException(exception);
 
         context.Response.StatusCode = exceptionResult.httpStatusCode;
