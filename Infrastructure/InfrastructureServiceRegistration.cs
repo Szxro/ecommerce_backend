@@ -60,7 +60,7 @@ public static class InfrastructureServiceRegistration
         services.AddTransient<IAppDbInitializer, AppDbInitializer>();
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<IRoleRepository, RoleRepository>();
-        services.AddTransient<IRolePrivilegeRepository, RolePrivilegeRepository>();
+        services.AddTransient<IRoleScopeRepository, RoleScopeRepository>();
         services.AddTransient<IUserRoleRepository, UserRoleRepository>();
         services.AddTransient<IPasswordService, PasswordService>();
         services.AddTransient<IDateService, DateService>();
