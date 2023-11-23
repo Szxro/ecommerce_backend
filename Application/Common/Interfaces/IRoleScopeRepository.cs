@@ -2,7 +2,7 @@
 
 namespace Application.Common.Interfaces;
 
-public interface IRolePrivilegeRepository
+public interface IRoleScopeRepository
 {
     Task<bool> CombinationRoleNameAndPrivilege(List<string> roles,
                                                        IDictionary<UserScope, string> rolesScope,
