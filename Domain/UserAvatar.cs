@@ -3,7 +3,7 @@ using Domain.Common.Owned;
 
 namespace Domain;
 
-public class Avatar : AuditableEntity
+public class UserAvatar : AuditableEntity
 {
     public Files File { get; set; } = new();
 
