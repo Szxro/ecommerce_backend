@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-public class RolePrivilegeRepository : GenericRepository<RolePrivilege>, IRolePrivilegeRepository
+public class RoleScopeRepository : GenericRepository<RoleScope>, IRoleScopeRepository
 {
-    public RolePrivilegeRepository(AppDbContext context) : base(context)
+    public RoleScopeRepository(AppDbContext context) : base(context)
     {
     }
 
@@ -20,6 +20,6 @@ public class RolePrivilegeRepository : GenericRepository<RolePrivilege>, IRolePr
                                                       CancellationToken cancellationToken = default)
     {
         return await ApplySpecification(new CombinationRoleNameAndPrivilegeSpecification(roles, rolesScope))
-                                        .AnyAsync(rolePrivilige => rolePrivilige.Privilige.PrivilegeName == rolesScope[userScope],cancellationToken);
+                                        .AnyAsync(roleScope => roleScope.Scope!.ScopeName == rolesScope[userScope],cancellationToken);
     }
 }
