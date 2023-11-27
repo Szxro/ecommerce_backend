@@ -13,4 +13,6 @@ public interface IRoleRepository
     Task<Role> GetRoleByRoleName(string roleName, CancellationToken cancellationToken = default);
 
     Task AddDefaultRolesAndScope();
+
+    bool CheckHaveAnyData();
 }
