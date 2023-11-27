@@ -1,5 +1,7 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.DelegatingHandlers;
+using Application.Common.Interfaces;
 using Infrastructure.Common;
+using Infrastructure.Options.Country;
 using Infrastructure.Options.Database;
 using Infrastructure.Options.Hash;
 using Infrastructure.Options.JWT;
@@ -27,6 +29,7 @@ public static class InfrastructureServiceRegistration
         services.ConfigureOptions<DatabaseOptionsSetup>();
         services.ConfigureOptions<HashOptionsSetup>();
         services.ConfigureOptions<JwtOptionsSetup>();
+        services.ConfigureOptions<CountryOptionsSetup>();
 
         services.AddDbContext<AppDbContext>((serviceProvider,options) =>
         {
@@ -66,6 +69,24 @@ public static class InfrastructureServiceRegistration
         services.AddTransient<IDateService, DateService>();
         services.AddTransient<ITokenService, TokenService>();
         services.AddTransient<ICurrentUserService, CurrentUserService>();
+        services.AddTransient<IPaymentTypeRepository, PaymentTypeRepository>();
+        services.AddTransient<IOrderStatusRepository, OrderStatusRepository>();
+        services.AddTransient<IShippingMethodRepository, ShippingMethodRepository>();
+        services.AddTransient<ICountryRepository, CountryRepository>();
+        services.AddTransient<ICategoryRepository, CategoryRepository>();
+
+        //Adding the Custom Delegating Handlers to the DI Container
+        services.AddTransient<LoggingHandler>();
+
+        // Adding the HttpClient (Transient but the httpclient is reusable it solve the pool,dns and socket problem)
+        services.AddHttpClient<ICountryService, CountryService>((serviceProvider,client) => 
+        {
+            CountryOptions countryOptions = serviceProvider.GetRequiredService<IOptions<CountryOptions>>().Value;
+
+            client.BaseAddress = new Uri(countryOptions.BaseUrl);
+
+            // can add more configuration to the client here
+        }).AddHttpMessageHandler<LoggingHandler>();
 
         return services;
     }
@@ -80,8 +101,6 @@ public static class InfrastructureServiceRegistration
 
         //Running the methods
         await initializer.ConnectAsync();
-
-        await initializer.EnsuredDatabaseCreated();
 
         await initializer.MigrateAsync();
 

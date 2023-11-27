@@ -49,4 +49,9 @@ public abstract class GenericRepository<TEntity> where TEntity : AuditableEntity
     {
         _context.Entry(entity).State = EntityState.Unchanged;
     }
+
+    public bool CheckHaveAnyData()
+    {
+        return _context.Set<TEntity>().Any();
+    }
 }

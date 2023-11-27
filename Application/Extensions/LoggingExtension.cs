@@ -37,17 +37,6 @@ public static partial class LoggingExtension
 
     [LoggerMessage(
         EventId = 4,
-        EventName = "Ensure Database Created Error",
-        Level = LogLevel.Error,
-        Message = "An error occured trying check if the database have any table {databaseProviderName} : {message}"
-        )]
-    public static partial void DatabaseCreatedError(this ILogger logger,
-                                               string? databaseProviderName,
-                                               string message);
-
-
-    [LoggerMessage(
-        EventId = 5,
         EventName = "Migrate Database Error",
         Level = LogLevel.Error,
         Message = "An error occured trying to do migration to the database {databaseProviderName} : {message}"
@@ -56,10 +45,8 @@ public static partial class LoggingExtension
                                                     string? databaseProviderName,
                                                     string message);
 
-
-
     [LoggerMessage(
-        EventId = 6,
+        EventId = 5,
         EventName = "Seed Database Error",
         Level = LogLevel.Error,
         Message = "An error ocurred trying to seed the database: {message}"
