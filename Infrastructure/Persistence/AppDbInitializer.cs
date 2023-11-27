@@ -1,5 +1,4 @@
 ﻿using Application.Common.Interfaces;
-using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Application.Extensions;
@@ -9,20 +8,32 @@ namespace Infrastructure.Persistence;
 public class AppDbInitializer : IAppDbInitializer
 {
     private readonly ILogger<AppDbInitializer> _logger;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly AppDbContext _context;
     private readonly IRoleRepository _roleRepository;
+    private readonly IPaymentTypeRepository _paymentTypeRepository;
+    private readonly IOrderStatusRepository _orderStatusRepository;
+    private readonly IShippingMethodRepository _shippingMethodRepository;
+    private readonly ICountryRepository _countryRepository;
+    private readonly ICategoryRepository _categoryRepository;
 
     public AppDbInitializer(
         ILogger<AppDbInitializer> logger,
-        IUnitOfWork unitOfWork,
         AppDbContext context,
-        IRoleRepository roleRepository)
+        IRoleRepository roleRepository,
+        IPaymentTypeRepository paymentTypeRepository,
+        IOrderStatusRepository orderStatusRepository,
+        IShippingMethodRepository shippingMethodRepository,
+        ICountryRepository countryRepository,
+        ICategoryRepository categoryRepository)
     {
         _logger = logger;
-        _unitOfWork = unitOfWork;
         _context = context;
         _roleRepository = roleRepository;
+        _paymentTypeRepository = paymentTypeRepository;
+        _orderStatusRepository = orderStatusRepository;
+        _shippingMethodRepository = shippingMethodRepository;
+        _countryRepository = countryRepository;
+        _categoryRepository = categoryRepository;
     }
 
     public async Task ConnectAsync()
@@ -33,18 +44,6 @@ public class AppDbInitializer : IAppDbInitializer
         } catch (Exception ex)
         {
             _logger.ConnectDatabaseError(_context.Database.ProviderName, ex.Message);
-        }
-    }
-
-    public async Task EnsuredDatabaseCreated()
-    {
-        try 
-        {
-            await _context.Database.EnsureCreatedAsync(); // check the database have any table and the database exists
-
-        } catch (Exception ex)
-        {
-            _logger.DatabaseCreatedError(_context.Database.ProviderName, ex.Message);
         }
     }
 
@@ -66,9 +65,20 @@ public class AppDbInitializer : IAppDbInitializer
     {
         try
         {
-            await TrySeedRolesAndScopeAsync();
+            // In this case can be use Task.WhenAll but the dbcontext instance cant be shared with the differents thread (dbcontex is not thread-safe)
+            await TrySeedRolesAndScope();
 
-        } catch (Exception ex)
+            await TrySeedCountry();
+
+            await TrySeedShippingMethod();
+
+            await TrySeedPaymentTypeAndProvider();
+
+            await TrySeedOrderStatus();
+
+            await TrySeedCategories();
+
+        } catch(Exception ex)
         {
             _logger.SeedDatabaseError(ex.Message);
 
@@ -76,11 +86,52 @@ public class AppDbInitializer : IAppDbInitializer
         }
     }
 
-    private async Task TrySeedRolesAndScopeAsync()
+    private async Task TrySeedRolesAndScope()
     {
-        if (!_context.Role.Any())
+        if (!_roleRepository.CheckHaveAnyData())
         {
             await _roleRepository.AddDefaultRolesAndScope();
+        }
+    }
+
+    private async Task TrySeedPaymentTypeAndProvider()
+    {
+        if (!_context.PaymentType.Any()
+            && !_context.Provider.Any())
+        {
+            await _paymentTypeRepository.AddDefaultPaymentTypeAndProvider();
+        }
+    }
+
+    private async Task TrySeedOrderStatus()
+    {
+        if (!_orderStatusRepository.CheckHaveAnyData())
+        {
+            await _orderStatusRepository.AddDefaultOrderStatus();
+        }
+    }
+
+    private async Task TrySeedShippingMethod()
+    {
+        if (!_shippingMethodRepository.CheckHaveAnyData())
+        {
+            await _shippingMethodRepository.AddDefaultShippingMethods();
+        }
+    }
+
+    private async Task TrySeedCountry()
+    {
+        if (!_countryRepository.CheckHaveAnyData())
+        {
+            await _countryRepository.AddDefaultCountries();
+        }
+    }
+
+    private async Task TrySeedCategories()
+    {
+        if (!_categoryRepository.CheckHaveAnyData())
+        {
+            await _categoryRepository.AddDefaultCategories();
         }
     }
 }

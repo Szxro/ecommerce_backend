@@ -7,6 +7,4 @@ public interface IAppDbInitializer
     Task SeedAsync();
 
     Task ConnectAsync();
-
-    Task EnsuredDatabaseCreated();
 }
