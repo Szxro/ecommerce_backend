@@ -1,6 +1,7 @@
-﻿using Application.Common.Exceptions;
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using Domain;
+using Domain.Guards;
+using Domain.Guards.Extensions;
 using MediatR;
 
 namespace Application.Features.UserRole.Commands.Create;
@@ -27,30 +28,38 @@ public class CreateUserRoleCommandHandler : IRequestHandler<CreateUserRoleComman
 
     public async Task<Unit> Handle(CreateUserRoleCommand request, CancellationToken cancellationToken)
     {
-        User? currentUser = await _userRepository.GetUserAndUserRolesByUsername(request.username);
+        User? currentUser = await _userRepository.GetUserAndUserRolesByUsernameAsync(request.username);
 
-        if (currentUser is null) throw new NotFoundException($"The username <{request.username}> was not found");
+        Ensure.Against.NotNull(currentUser, nameof(currentUser), $"The username <{request.username}> was not found");
 
-        Role? currentRole = await _roleRepository.GetRoleByRoleName(request.rolename);
+        Role? currentRole = await _roleRepository.GetRoleByRoleNameAsync(request.rolename);
 
-        if (currentRole is null) throw new NotFoundException($"The role with the rolename <{request.rolename}> was not found");
+        Ensure.Against.NotNull(currentRole, nameof(currentRole), $"The role with the rolename <{request.rolename}> was not found");
 
-        if (currentUser.UserRoles.Any(role => role.RoleId == currentRole.Id)) throw new ArgumentException($"The user already have that role <{currentRole.RoleName}>");
+        IsRoleAlreadyInTheUser(currentUser, currentRole.Id, currentRole.RoleName);
 
         UserRoles newUserRoles = new()
         {
-           User = currentUser,
-           Role = currentRole,
+            User = currentUser,
+            Role = currentRole,
         };
 
         // Changing tracking to unchanged
         _userRepository.ChangeTrackerToUnchanged(newUserRoles.User);
         _roleRepository.ChangeTrackerToUnchanged(newUserRoles.Role);
-        
+
         _userRoleRepository.Add(newUserRoles);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Unit.Value;
+    }
+
+    private void IsRoleAlreadyInTheUser(User currentUser,int roleId,string currentRoleName)
+    {
+        if (currentUser.UserRoles.Any(role => role.RoleId == roleId))
+        {
+            throw new ArgumentException($"The user already have that role <{currentRoleName}>");
+        }
     }
 }

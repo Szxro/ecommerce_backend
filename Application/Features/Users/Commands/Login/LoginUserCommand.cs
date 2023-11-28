@@ -3,6 +3,8 @@ using Domain.Common.Response;
 using Application.Common.Interfaces;
 using Domain;
 using Application.Common.Exceptions;
+using Domain.Guards;
+using Domain.Guards.Extensions;
 
 namespace Application.Features.Users.Commands.Login;
 
@@ -24,23 +26,28 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, TokenRe
     }
     public async Task<TokenResponse> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        User? currentUser = await _user.GetUserClaimsByUsername(request.username,cancellationToken);
+        User? currentUser = await _user.GetUserClaimsByUsernameAsync(request.username,cancellationToken);
 
-        if (currentUser is null) throw new NotFoundException($"The username <{request.username}> was not found");
+        Ensure.Against.NotNull(currentUser, nameof(currentUser), $"The user with the of username {request.username} was not found");
 
         string? currentUserHash = currentUser.UserHash?.HashValue;
 
-        if (string.IsNullOrWhiteSpace(currentUserHash)) throw new Exception("Invalid hash");
+        Ensure.Against.NotNullOrEmpty(currentUserHash, nameof(currentUserHash), "Invalid Hash");
 
         byte[]? currentUserSalt = Convert.FromHexString(currentUser.UserSalt!.SaltValue);
 
-        if (currentUserSalt is null) throw new Exception("Invalid salt");
+        Ensure.Against.NotNull(currentUserSalt, nameof(currentUserSalt), "Invalid Salt");
 
-        bool isPasswordCorrect = _password.CompareUserHash(request.password,currentUserHash,currentUserSalt);
-
-        if (!isPasswordCorrect) throw new PasswordException("Incorrect password, try again");
+        IsPasswordValid(request.password,currentUserHash,currentUserSalt);
 
         //Generating the token and returning it as a response
         return new TokenResponse(_tokenService.GenerateToken(currentUser));
+    }
+
+    private void IsPasswordValid(string password,string userHash,byte[] userSalt)
+    {
+        bool isPasswordCorrect = _password.CompareUserHash(password, userHash, userSalt);
+
+        if (!isPasswordCorrect) throw new PasswordException("Incorrect password, try again");
     }
 }
