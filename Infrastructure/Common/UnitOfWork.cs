@@ -18,11 +18,11 @@ public class UnitOfWork : IUnitOfWork
     }
     public async Task SaveChangesAsync(CancellationToken cancellation = default)
     {
-        UpdateAuditableEnttities();
+        UpdateAuditableEntities();
         await _context.SaveChangesAsync(cancellation);
     }
 
-    public void UpdateAuditableEnttities()
+    public void UpdateAuditableEntities()
     {
         if (_context is null) return;
 
