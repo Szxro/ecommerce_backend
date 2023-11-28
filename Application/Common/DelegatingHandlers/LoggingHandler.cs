@@ -1,4 +1,4 @@
-﻿
+﻿using Domain.Logging;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Common.DelegatingHandlers;
@@ -22,7 +22,7 @@ public class LoggingHandler : DelegatingHandler
 
             HttpResponseMessage? result = await base.SendAsync(request, cancellationToken);
 
-            result.EnsureSuccessStatusCode(); // is going to throw an exception if the request fail
+            result.EnsureSuccessStatusCode(); // is going to throw an exception if the request fail (must be 200)
 
             _logger.LogInformation("Send Sucessfully HTTP Request");
 
@@ -30,7 +30,7 @@ public class LoggingHandler : DelegatingHandler
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            _logger.HttpRequestError(request.RequestUri?.OriginalString ?? "Unkown Uri", ex.Message);
 
             throw;
         }
