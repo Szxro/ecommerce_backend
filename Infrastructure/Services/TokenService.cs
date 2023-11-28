@@ -1,4 +1,4 @@
-﻿using Application.Common.Exceptions;
+﻿using Domain.Exceptions;
 using Application.Common.Interfaces;
 using Domain;
 using Infrastructure.Options.JWT;
@@ -7,6 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Domain.Guards;
+using Domain.Guards.Extensions;
 
 namespace Infrastructure.Services;
 
@@ -87,12 +89,9 @@ public class TokenService : ITokenService
 
     private ClaimsIdentity GenerateClaims(User user) 
     {
-        List<string>? userRoles = user.UserRoles.Select(role => role.Role!.RoleName).ToList();
+        List<string>? userRoles = user.UserRoles.Select(role => role.Role.RoleName).ToList();
 
-        if (!userRoles.Any())
-        {
-            throw new NotFoundException("The roles of the user was not found");
-        }
+        Ensure.Against.NotNullOrEmpty(userRoles, nameof(userRoles), "The roles of the user was not found");
 
         ClaimsIdentity userClaims = new ClaimsIdentity(new[]
             {

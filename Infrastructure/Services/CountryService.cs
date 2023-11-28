@@ -1,7 +1,8 @@
-﻿using Application.Common.Guards;
+﻿using Domain.Guards;
 using Application.Common.Interfaces;
 using Domain.Common.Request;
 using System.Net.Http.Json;
+using Domain.Guards.Extensions;
 
 namespace Infrastructure.Services;
 
@@ -13,12 +14,12 @@ public class CountryService : ICountryService
     {
         _httpClient = httpClient;
     }
-    public async Task<ICollection<CountryRequest>> GetCountries()
+    public async Task<ICollection<CountryRequest>> GetCountriesAsync()
     {
         ICollection<CountryRequest>? request = await _httpClient.GetFromJsonAsync<ICollection<CountryRequest>>("");
 
-        Ensure.NotNull(request);
+        Ensure.Against.NotNullOrEmpty(request, nameof(request), $"The request maded return no items");
 
-        return request!;
+        return request;
     }
 }
