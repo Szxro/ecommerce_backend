@@ -64,6 +64,6 @@ public class PrivilegeFilter : Attribute, IAsyncAuthorizationFilter
         // if the rolesCount is diferent from the roleNames 
         if (rolesCount != roles.Count) throw new UnauthorizedAccessException();
 
-        return await rolePrivilege.CombinationRoleNameAndPrivilege(roles, _roleScope, _userScope);
+        return await rolePrivilege.CombinationRoleNameAndPrivilegeAsync(roles, _roleScope, _userScope);
     }
 }
