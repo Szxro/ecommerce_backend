@@ -13,7 +13,7 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     {
     }
 
-    public async Task<User?> GetUserAndUserRolesByUsername(string username, CancellationToken cancellationToken = default)
+    public async Task<User?> GetUserAndUserRolesByUsernameAsync(string username, CancellationToken cancellationToken = default)
     {
         return await ApplySpecification(new GetUserAndUserRolesByUsernameSpecification(username))
                                         .Select(user => new User()
@@ -26,7 +26,7 @@ public class UserRepository : GenericRepository<User>, IUserRepository
                                         .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<User?> GetUserClaimsByUsername(string username, CancellationToken cancellationToken = default)
+    public async Task<User?> GetUserClaimsByUsernameAsync(string username, CancellationToken cancellationToken = default)
     {
         return await _context.User
                                   .Where(user => user.Username == username)

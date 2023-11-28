@@ -2,7 +2,7 @@
 
 public interface ICategoryRepository
 {
-    Task AddDefaultCategories();
+    Task AddDefaultCategoriesAsync();
 
     bool CheckHaveAnyData();
 }

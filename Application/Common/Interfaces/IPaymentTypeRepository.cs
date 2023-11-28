@@ -2,5 +2,5 @@
 
 public interface IPaymentTypeRepository
 {
-    Task AddDefaultPaymentTypeAndProvider();
+    Task AddDefaultPaymentTypeAndProviderAsync();
 }

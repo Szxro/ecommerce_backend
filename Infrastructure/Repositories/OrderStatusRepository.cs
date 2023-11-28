@@ -14,7 +14,7 @@ public class OrderStatusRepository : GenericRepository<OrderStatus>, IOrderStatu
         _unitOfWork = unitOfWork;
     }
 
-    public async Task AddDefaultOrderStatus()
+    public async Task AddDefaultOrderStatusAsync()
     {
         ICollection<OrderStatus> orderStatuses = new HashSet<OrderStatus>()
         {

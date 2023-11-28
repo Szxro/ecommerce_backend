@@ -14,7 +14,7 @@ public class PaymentTypeRepository : GenericRepository<PaymentType>,IPaymentType
         _unitOfWork = unitOfWork;
     }
 
-    public async Task AddDefaultPaymentTypeAndProvider()
+    public async Task AddDefaultPaymentTypeAndProviderAsync()
     {
         ICollection<PaymentType> paymentTypes = new HashSet<PaymentType>()
         {

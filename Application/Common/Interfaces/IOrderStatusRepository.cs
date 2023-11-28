@@ -2,7 +2,7 @@
 
 public interface IOrderStatusRepository 
 {
-    Task AddDefaultOrderStatus();
+    Task AddDefaultOrderStatusAsync();
 
     bool CheckHaveAnyData();
 }

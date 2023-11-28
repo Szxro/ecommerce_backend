@@ -14,7 +14,7 @@ public class CategoryRepository : GenericRepository<Category>, ICategoryReposito
         _unitOfWork = unitOfWork;
     }
 
-    public async Task AddDefaultCategories()
+    public async Task AddDefaultCategoriesAsync()
     {
         ICollection<Category> categories = new HashSet<Category>()
         {

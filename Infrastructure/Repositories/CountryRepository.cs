@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces;
+using Application.Common.Mapping;
 using Domain;
 using Infrastructure.Common;
 using Infrastructure.Persistence;
@@ -18,11 +19,11 @@ public class CountryRepository : GenericRepository<Country>, ICountryRepository
         _countryService = countryService;
     }
 
-    public async Task AddDefaultCountries()
+    public async Task AddDefaultCountriesAsnyc()
     {
-        var result = await _countryService.GetCountries();
+        var result = await _countryService.GetCountriesAsync();
 
-        ICollection<Country> countries = result.Select(country => new Country() {CountryName = country.Name.Common }).ToHashSet();
+        ICollection<Country> countries = result.ToCountry();
 
         _context.Country.AddRange(countries);
 

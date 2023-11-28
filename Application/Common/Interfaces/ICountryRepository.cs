@@ -2,7 +2,7 @@
 
 public interface ICountryRepository
 {
-   Task AddDefaultCountries();
+   Task AddDefaultCountriesAsnyc();
 
    bool CheckHaveAnyData();
 }

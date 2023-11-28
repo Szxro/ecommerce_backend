@@ -14,7 +14,7 @@ public class RoleScopeRepository : GenericRepository<RoleScope>, IRoleScopeRepos
     {
     }
 
-    public async Task<bool> CombinationRoleNameAndPrivilege(List<string> roles,
+    public async Task<bool> CombinationRoleNameAndPrivilegeAsync(List<string> roles,
                                                       IDictionary<UserScope, string> rolesScope,
                                                       UserScope userScope,
                                                       CancellationToken cancellationToken = default)

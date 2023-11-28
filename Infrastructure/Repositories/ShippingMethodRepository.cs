@@ -14,7 +14,7 @@ public class ShippingMethodRepository : GenericRepository<ShippingMethod>, IShip
         _unitOfWork = unitOfWork;
     }
 
-    public async Task AddDefaultShippingMethods()
+    public async Task AddDefaultShippingMethodsAsnyc()
     {
         ICollection<ShippingMethod> shippingMethods = new HashSet<ShippingMethod>()
         {

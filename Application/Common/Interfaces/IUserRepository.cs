@@ -8,7 +8,7 @@ public interface IUserRepository
 
     void ChangeTrackerToUnchanged(User user);
 
-    Task<User?> GetUserClaimsByUsername(string username,CancellationToken cancellationToken = default);
+    Task<User?> GetUserClaimsByUsernameAsync(string username,CancellationToken cancellationToken = default);
 
-    Task<User?> GetUserAndUserRolesByUsername(string username, CancellationToken cancellationToken = default);
+    Task<User?> GetUserAndUserRolesByUsernameAsync(string username, CancellationToken cancellationToken = default);
 }

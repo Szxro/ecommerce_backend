@@ -10,9 +10,9 @@ public interface IRoleRepository
 
     Task<int> CountRolesAsync(List<string> roles, CancellationToken cancellationToken = default);
 
-    Task<Role> GetRoleByRoleName(string roleName, CancellationToken cancellationToken = default);
+    Task<Role?> GetRoleByRoleNameAsync(string roleName, CancellationToken cancellationToken = default);
 
-    Task AddDefaultRolesAndScope();
+    Task AddDefaultRolesAndScopeAsync();
 
     bool CheckHaveAnyData();
 }

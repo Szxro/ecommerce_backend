@@ -16,7 +16,7 @@ public class RoleRepository : GenericRepository<Role>, IRoleRepository
         _unitOfWork = unitOfWork;
     }
 
-    public async Task AddDefaultRolesAndScope()
+    public async Task AddDefaultRolesAndScopeAsync()
     {
         // Defaults roles and scopes
         ICollection<Role> roles = new HashSet<Role>()
@@ -106,7 +106,7 @@ public class RoleRepository : GenericRepository<Role>, IRoleRepository
                                         .CountAsync(cancellationToken);
     }
 
-    public async Task<Role> GetRoleByRoleName(string roleName,CancellationToken cancellationToken = default)
+    public async Task<Role?> GetRoleByRoleNameAsync(string roleName,CancellationToken cancellationToken = default)
     {
         return await ApplySpecification(new GetRoleByRoleNameSpecification(roleName))
                                         .Select(role => new Role()
@@ -114,6 +114,6 @@ public class RoleRepository : GenericRepository<Role>, IRoleRepository
                                             Id = role.Id,
                                             RoleName = role.RoleName
                                         })
-                                        .FirstAsync(cancellationToken);
+                                        .FirstOrDefaultAsync(cancellationToken);
     }
 }

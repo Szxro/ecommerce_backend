@@ -2,7 +2,7 @@
 
 public interface IShippingMethodRepository
 {
-    Task AddDefaultShippingMethods();
+    Task AddDefaultShippingMethodsAsnyc();
 
     bool CheckHaveAnyData();
 }
