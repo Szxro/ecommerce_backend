@@ -21,7 +21,7 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
             //Creation the validation context with the request
             var validationContext = new ValidationContext<TRequest>(request);
 
-            //Validating the differents requests with validation context
+            //Validating concurrenly the differents requests with validation context 
             var validationResult = await Task
                                         .WhenAll(_validators.Select(x => x.ValidateAsync(validationContext, cancellationToken)));
             //Task.WhenAll => Waiting a list of Tasks to finish
