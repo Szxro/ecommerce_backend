@@ -1,6 +1,7 @@
-﻿using Application.Common.Exceptions;
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using Domain;
+using Domain.Guards;
+using Domain.Guards.Extensions;
 using EntityFrameworkCore.Triggered;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,9 +24,9 @@ public class EnforcedUserRole : IBeforeSaveTrigger<User>
     }
     public async Task BeforeSave(ITriggerContext<User> context, CancellationToken cancellationToken)
     {
-        Role? currentRole = await _roleRepository.GetRoleByRoleName(_userRole);
+        Role? currentRole = await _roleRepository.GetRoleByRoleNameAsync(_userRole);
 
-        if (currentRole is null) throw new NotFoundException($"The role with the rolename <{_userRole}> was not found");
+        Ensure.Against.NotNull(currentRole, nameof(currentRole), $"The role with the rolename <{_userRole}> was not found");
 
         UserRoles newUserRoles = new()
         {

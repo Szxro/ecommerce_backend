@@ -1,7 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Application.Extensions;
+using Domain.Logging;
 
 namespace Infrastructure.Persistence;
 
@@ -90,7 +90,7 @@ public class AppDbInitializer : IAppDbInitializer
     {
         if (!_roleRepository.CheckHaveAnyData())
         {
-            await _roleRepository.AddDefaultRolesAndScope();
+            await _roleRepository.AddDefaultRolesAndScopeAsync();
         }
     }
 
@@ -99,7 +99,7 @@ public class AppDbInitializer : IAppDbInitializer
         if (!_context.PaymentType.Any()
             && !_context.Provider.Any())
         {
-            await _paymentTypeRepository.AddDefaultPaymentTypeAndProvider();
+            await _paymentTypeRepository.AddDefaultPaymentTypeAndProviderAsync();
         }
     }
 
@@ -107,7 +107,7 @@ public class AppDbInitializer : IAppDbInitializer
     {
         if (!_orderStatusRepository.CheckHaveAnyData())
         {
-            await _orderStatusRepository.AddDefaultOrderStatus();
+            await _orderStatusRepository.AddDefaultOrderStatusAsync();
         }
     }
 
@@ -115,7 +115,7 @@ public class AppDbInitializer : IAppDbInitializer
     {
         if (!_shippingMethodRepository.CheckHaveAnyData())
         {
-            await _shippingMethodRepository.AddDefaultShippingMethods();
+            await _shippingMethodRepository.AddDefaultShippingMethodsAsnyc();
         }
     }
 
@@ -123,7 +123,7 @@ public class AppDbInitializer : IAppDbInitializer
     {
         if (!_countryRepository.CheckHaveAnyData())
         {
-            await _countryRepository.AddDefaultCountries();
+            await _countryRepository.AddDefaultCountriesAsnyc();
         }
     }
 
@@ -131,7 +131,7 @@ public class AppDbInitializer : IAppDbInitializer
     {
         if (!_categoryRepository.CheckHaveAnyData())
         {
-            await _categoryRepository.AddDefaultCategories();
+            await _categoryRepository.AddDefaultCategoriesAsync();
         }
     }
 }
