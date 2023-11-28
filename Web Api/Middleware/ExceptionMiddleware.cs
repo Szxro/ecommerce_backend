@@ -1,4 +1,5 @@
 ﻿using Application.Common.Exceptions;
+using Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text.Json;
@@ -45,12 +46,18 @@ public class ExceptionMiddleware : IMiddleware
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
             Title = "Validation Exception Happen"
         })),
-        NotFoundException notFoundException =>((int)HttpStatusCode.BadRequest, JsonSerializer.Serialize(new ProblemDetails()
+        NullException nullException =>((int)HttpStatusCode.BadRequest, JsonSerializer.Serialize(new ProblemDetails()
         {
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
-            Title = "NotFoundException Happen",
-            Detail = notFoundException.Message
+            Title = "NullException Happen",
+            Detail = nullException.Message
         })), 
+        TokenException tokenException => ((int)HttpStatusCode.BadRequest,JsonSerializer.Serialize(new ProblemDetails() 
+        {
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+            Title = "Token Exception Happen",
+            Detail = tokenException.Message
+        })),
         _ => ((int)HttpStatusCode.InternalServerError, JsonSerializer.Serialize(new ProblemDetails()
         {
             Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
