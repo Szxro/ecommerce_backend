@@ -26,7 +26,7 @@ public class EnforcedUserRole : IBeforeSaveTrigger<User>
     {
         Role? currentRole = await _roleRepository.GetRoleByRoleNameAsync(_userRole);
 
-        Ensure.Against.NotNull(currentRole, nameof(currentRole), $"The role with the rolename <{_userRole}> was not found");
+        Ensure.Against.Null(currentRole, nameof(currentRole), $"The role with the rolename <{_userRole}> was not found");
 
         UserRoles newUserRoles = new()
         {

@@ -28,15 +28,15 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, TokenRe
     {
         User? currentUser = await _user.GetUserClaimsByUsernameAsync(request.username,cancellationToken);
 
-        Ensure.Against.NotNull(currentUser, nameof(currentUser), $"The user with the of username {request.username} was not found");
+        Ensure.Against.Null(currentUser, nameof(currentUser), $"The username {request.username} was not found");
 
         string? currentUserHash = currentUser.UserHash?.HashValue;
 
-        Ensure.Against.NotNullOrEmpty(currentUserHash, nameof(currentUserHash), "Invalid Hash");
+        Ensure.Against.NullOrEmpty(currentUserHash, nameof(currentUserHash), "Invalid Hash");
 
         byte[]? currentUserSalt = Convert.FromHexString(currentUser.UserSalt!.SaltValue);
 
-        Ensure.Against.NotNull(currentUserSalt, nameof(currentUserSalt), "Invalid Salt");
+        Ensure.Against.Null(currentUserSalt, nameof(currentUserSalt), "Invalid Salt");
 
         IsPasswordValid(request.password,currentUserHash,currentUserSalt);
 

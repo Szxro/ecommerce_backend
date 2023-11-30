@@ -4,9 +4,9 @@ using System.Runtime.CompilerServices;
 
 namespace Domain.Guards.Extensions;
 
-public static partial class EnsureAgainstNotNull
+public static partial class EnsureAgainstNull
 {
-    public static T NotNull<T>(
+    public static T Null<T>(
        this IEnsure ensure,
        [NotNull] T? input, // specifies that the output is not null
        [CallerArgumentExpression("input")] string? paramName = null,
@@ -20,13 +20,13 @@ public static partial class EnsureAgainstNotNull
         return input;
     }
 
-    public static string NotNullOrEmpty(
+    public static string NullOrEmpty(
         this IEnsure ensure,
         [NotNull] string? input,
         [CallerArgumentExpression("input")] string? paramName = null,
         string? message = null)
     {
-        ensure.NotNull(input, paramName, message);
+        ensure.Null(input, paramName, message);
 
         if (input == string.Empty)
         {
@@ -36,14 +36,14 @@ public static partial class EnsureAgainstNotNull
         return input;
     }
 
-    public static IEnumerable<T> NotNullOrEmpty<T>(
+    public static IEnumerable<T> NullOrEmpty<T>(
         this IEnsure ensure,
         [NotNull] IEnumerable<T>? input,
         [CallerArgumentExpression("input")] string? paramName = null,
         string? message = null
         )
     {
-        ensure.NotNull(input, paramName, message);
+        ensure.Null(input, paramName, message);
 
         if (!input.Any())
         {
@@ -54,13 +54,13 @@ public static partial class EnsureAgainstNotNull
     }
 
 
-    public static string NotNullOrWhiteSpace(
+    public static string NullOrWhiteSpace(
         this IEnsure ensure,
         [NotNull] string? input,
         [CallerArgumentExpression("input")] string? paramName = null,
         string? message = null)
     {
-        ensure.NotNullOrEmpty(input, paramName, message);
+        ensure.NullOrEmpty(input, paramName, message);
 
         if (string.IsNullOrWhiteSpace(input))
         {
