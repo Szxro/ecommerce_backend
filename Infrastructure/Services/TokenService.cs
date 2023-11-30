@@ -1,5 +1,4 @@
-﻿using Domain.Exceptions;
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using Domain;
 using Infrastructure.Options.JWT;
 using Microsoft.Extensions.Options;
@@ -16,17 +15,14 @@ public class TokenService : ITokenService
 {
     private readonly JwtOptions _jwtOptions;
     private readonly IDateService _date;
-    private readonly IRoleRepository _role;
     private readonly TokenValidationParameters _tokenValidationParameters;
 
     public TokenService(
         IOptions<JwtOptions> options,
-        IDateService date,
-        IRoleRepository role)
+        IDateService date)
     {
         _jwtOptions = options.Value;
         _date = date;
-        _role = role;
         _tokenValidationParameters = new TokenValidationParameters()
         {
             ValidateAudience = true,
@@ -73,14 +69,12 @@ public class TokenService : ITokenService
 
         if (validatedToken is JwtSecurityToken jwtSecurityToken)
         {
-            bool isTokenAlgorithmValid = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase);
-
-            if (!isTokenAlgorithmValid) throw new TokenException("Invalid Token Algorithm");
+            IsTokenAlgoritmValid(jwtSecurityToken);
         }
 
         string? tokenExpiryStamp = tokenClaims.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Exp)?.Value;
 
-        if (tokenExpiryStamp is null) throw new TokenException("Invalid Token Stamp");
+        Ensure.Against.NotNull(tokenExpiryStamp,nameof(tokenExpiryStamp), "Invalid Token Stamp");
 
         DateTime tokenExpiryDate = _date.TimeStampToUTCDate(long.Parse(tokenExpiryStamp));
 
@@ -101,5 +95,12 @@ public class TokenService : ITokenService
             }.Union(userRoles.Select(roleNames => new Claim(ClaimTypes.Role,roleNames))).ToList());
 
         return userClaims;
+    }
+
+    private void IsTokenAlgoritmValid(JwtSecurityToken jwtSecurityToken)
+    {
+        bool isTokenAlgorithmValid = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase);
+
+        if (!isTokenAlgorithmValid) throw new Exception("Invalid Token Algorithm");
     }
 }
