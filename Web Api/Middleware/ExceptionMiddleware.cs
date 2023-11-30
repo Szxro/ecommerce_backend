@@ -51,12 +51,6 @@ public class ExceptionMiddleware : IMiddleware
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
             Title = "NullException Happen",
             Detail = nullException.Message
-        })), 
-        TokenException tokenException => ((int)HttpStatusCode.BadRequest,JsonSerializer.Serialize(new ProblemDetails() 
-        {
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
-            Title = "Token Exception Happen",
-            Detail = tokenException.Message
         })),
         _ => ((int)HttpStatusCode.InternalServerError, JsonSerializer.Serialize(new ProblemDetails()
         {
