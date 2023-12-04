@@ -30,11 +30,11 @@ public class CreateUserRoleCommandHandler : IRequestHandler<CreateUserRoleComman
     {
         User? currentUser = await _userRepository.GetUserAndUserRolesByUsernameAsync(request.username);
 
-        Ensure.Against.Null(currentUser, nameof(currentUser), $"The username <{request.username}> was not found");
+        Guard.Against.Null(currentUser, nameof(currentUser), $"The username <{request.username}> was not found");
 
         Role? currentRole = await _roleRepository.GetRoleByRoleNameAsync(request.rolename);
 
-        Ensure.Against.Null(currentRole, nameof(currentRole), $"The role with the rolename <{request.rolename}> was not found");
+        Guard.Against.Null(currentRole, nameof(currentRole), $"The role with the rolename <{request.rolename}> was not found");
 
         IsRoleAlreadyInTheUser(currentUser, currentRole.Id, currentRole.RoleName);
 

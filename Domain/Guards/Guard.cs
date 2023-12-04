@@ -1,13 +1,13 @@
 ﻿namespace Domain.Guards;
 
 // An entry point to a set of Guard Clauses defined as extension methods on IGuardClause.
-public interface IEnsure { }
+public interface IGuard { }
 
 
-public class Ensure : IEnsure
+public class Guard : IGuard
 {
     // only way to create a guard class
-    public static IEnsure Against = new Ensure();
+    public static IGuard Against = new Guard();
 
-    private Ensure() { }
+    private Guard() { }
 }

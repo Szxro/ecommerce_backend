@@ -4,10 +4,10 @@ using System.Runtime.CompilerServices;
 
 namespace Domain.Guards.Extensions;
 
-public static partial class EnsureAgainstNull
+public static partial class GuardAgainstNull
 {
     public static T Null<T>(
-       this IEnsure ensure,
+       this IGuard ensure,
        [NotNull] T? input, // specifies that the output is not null
        [CallerArgumentExpression("input")] string? paramName = null,
        string? message = null)
@@ -21,7 +21,7 @@ public static partial class EnsureAgainstNull
     }
 
     public static string NullOrEmpty(
-        this IEnsure ensure,
+        this IGuard ensure,
         [NotNull] string? input,
         [CallerArgumentExpression("input")] string? paramName = null,
         string? message = null)
@@ -37,7 +37,7 @@ public static partial class EnsureAgainstNull
     }
 
     public static IEnumerable<T> NullOrEmpty<T>(
-        this IEnsure ensure,
+        this IGuard ensure,
         [NotNull] IEnumerable<T>? input,
         [CallerArgumentExpression("input")] string? paramName = null,
         string? message = null
@@ -55,7 +55,7 @@ public static partial class EnsureAgainstNull
 
 
     public static string NullOrWhiteSpace(
-        this IEnsure ensure,
+        this IGuard ensure,
         [NotNull] string? input,
         [CallerArgumentExpression("input")] string? paramName = null,
         string? message = null)

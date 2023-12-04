@@ -18,7 +18,7 @@ public class CountryService : ICountryService
     {
         ICollection<CountryRequest>? request = await _httpClient.GetFromJsonAsync<ICollection<CountryRequest>>("");
 
-        Ensure.Against.NullOrEmpty(request, nameof(request), $"The request maded return no items");
+        Guard.Against.NullOrEmpty(request, nameof(request), $"The request maded return no items");
 
         return request;
     }

@@ -28,8 +28,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
     public RegisterUserCommandHandler(
         IUnitOfWork unitOfWork,
         IPasswordService passwordService,
-        IUserRepository user,
-        IRoleRepository role)
+        IUserRepository user)
     {
         _unitOfWork = unitOfWork;
         _passwordService = passwordService;
@@ -47,7 +46,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
 
         _user.Add(newUser);
 
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return newUser.Username;
     }

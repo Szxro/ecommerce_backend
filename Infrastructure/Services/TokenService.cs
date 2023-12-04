@@ -74,7 +74,7 @@ public class TokenService : ITokenService
 
         string? tokenExpiryStamp = tokenClaims.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Exp)?.Value;
 
-        Ensure.Against.Null(tokenExpiryStamp,nameof(tokenExpiryStamp), "Invalid Token Stamp");
+        Guard.Against.Null(tokenExpiryStamp,nameof(tokenExpiryStamp), "Invalid Token Stamp");
 
         DateTime tokenExpiryDate = _date.TimeStampToUTCDate(long.Parse(tokenExpiryStamp));
 
@@ -85,7 +85,7 @@ public class TokenService : ITokenService
     {
         List<string>? userRoles = user.UserRoles.Select(role => role.Role.RoleName).ToList();
 
-        Ensure.Against.NullOrEmpty(userRoles, nameof(userRoles), "The roles of the user was not found");
+        Guard.Against.NullOrEmpty(userRoles, nameof(userRoles), "The roles of the user was not found");
 
         ClaimsIdentity userClaims = new ClaimsIdentity(new[]
             {
