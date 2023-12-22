@@ -2,7 +2,5 @@
 
 public interface IUnitOfWork
 {
-    Task SaveChangesAsync(CancellationToken cancellation = default);
-
-    void UpdateAuditableEntities();
+    Task<int> SaveChangesAsync(CancellationToken cancellation = default);
 }
