@@ -31,6 +31,8 @@ public class AppDbContext : DbContext
 
     public DbSet<UserAvatar> UserAvatar => Set<UserAvatar>();
 
+    public DbSet<UserActivity> UserActivity => Set<UserActivity>();
+
     public DbSet<Address> Address => Set<Address>();
 
     public DbSet<Country> Country => Set<Country>();
