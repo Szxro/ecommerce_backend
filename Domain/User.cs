@@ -30,6 +30,8 @@ namespace Domain
 
         public UserSalt? UserSalt { get; set; } // One to One (Required)
 
+        public UserActivity? UserActivity { get; set; } // One to One (Required)
+
         public ICollection<UserRoles> UserRoles { get; set; } // One to Many (Nullable)
 
         public ICollection<UserAddress> Addresses { get; set; } // Many to One (Required)
