@@ -36,6 +36,16 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
     }
     public async Task<string> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
+        if (await IsUserUsernameAlreadyRegister(request.Username))
+        {
+            throw new Exception("The username already is registered");
+        }
+
+        if (await IsUserEmailAlreadyRegister(request.Email))
+        {
+            throw new Exception("The email already is registered");
+        }
+
         if (!CheckPasswordEquality(request.Password, request.ConfirmPassword)) throw new PasswordException("The password and confirm password must be equal");
 
         //Generating UserHash and UserSalt
@@ -51,5 +61,18 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
         return newUser.Username;
     }
 
-    private bool CheckPasswordEquality(string password,string confirmPassword) => password.Equals(confirmPassword);
+    private bool CheckPasswordEquality(string password, string confirmPassword)
+    {
+        return password.Equals(confirmPassword);
+    }
+
+    private async Task<bool> IsUserUsernameAlreadyRegister(string username)
+    {
+        return await _user.CheckPropertyExistAsync(x => x.Username == username);
+    }
+
+    private async Task<bool> IsUserEmailAlreadyRegister(string email)
+    {
+        return await _user.CheckPropertyExistAsync(x => x.Email == email);
+    }
 }

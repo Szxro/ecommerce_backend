@@ -3,6 +3,7 @@ using Domain;
 using Domain.Guards;
 using Domain.Guards.Extensions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.UserRole.Commands.Create;
 
@@ -36,7 +37,10 @@ public class CreateUserRoleCommandHandler : IRequestHandler<CreateUserRoleComman
 
         Guard.Against.Null(currentRole, nameof(currentRole), $"The role with the rolename <{request.rolename}> was not found");
 
-        IsRoleAlreadyInTheUser(currentUser, currentRole.Id, currentRole.RoleName);
+        if (IsRoleAlreadyInTheUser(currentUser, currentRole.Id, currentRole.RoleName))
+        {
+            throw new ArgumentException($"The user already have that role <{currentRole.RoleName}>");
+        };
 
         UserRoles newUserRoles = new()
         {
@@ -45,8 +49,8 @@ public class CreateUserRoleCommandHandler : IRequestHandler<CreateUserRoleComman
         };
 
         // Changing tracking to unchanged
-        _userRepository.ChangeTrackerToUnchanged(newUserRoles.User);
-        _roleRepository.ChangeTrackerToUnchanged(newUserRoles.Role);
+        _userRepository.ChangeEntityContextTracker(newUserRoles.User,EntityState.Unchanged);
+        _roleRepository.ChangeEntityContextTracker(newUserRoles.Role,EntityState.Unchanged);
 
         _userRoleRepository.Add(newUserRoles);
 
@@ -55,11 +59,8 @@ public class CreateUserRoleCommandHandler : IRequestHandler<CreateUserRoleComman
         return Unit.Value;
     }
 
-    private void IsRoleAlreadyInTheUser(User currentUser,int roleId,string currentRoleName)
+    private bool IsRoleAlreadyInTheUser(User currentUser,int roleId,string currentRoleName)
     {
-        if (currentUser.UserRoles.Any(role => role.RoleId == roleId))
-        {
-            throw new ArgumentException($"The user already have that role <{currentRoleName}>");
-        }
+        return currentUser.UserRoles.Any(role => role.RoleId == roleId);
     }
 }
