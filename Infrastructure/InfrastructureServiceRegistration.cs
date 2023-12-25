@@ -1,6 +1,7 @@
 ﻿using Application.Common.DelegatingHandlers;
 using Application.Common.Interfaces;
 using Infrastructure.Common;
+using Infrastructure.Interceptors;
 using Infrastructure.Options.Country;
 using Infrastructure.Options.Database;
 using Infrastructure.Options.Hash;
@@ -31,6 +32,10 @@ public static class InfrastructureServiceRegistration
         services.ConfigureOptions<JwtOptionsSetup>();
         services.ConfigureOptions<CountryOptionsSetup>();
 
+        // Registering the interceptors 
+        services.AddSingleton<AuditableEntititesInterceptor>();
+        services.AddScoped<EnforcedUserRoleInterceptor>(); // need to register as a scoped if you are using the current context 
+
         services.AddDbContext<AppDbContext>((serviceProvider,options) =>
         {
             //Getting an instance of IOptions to use the options that are defined in appsettings.json (must be register and inherance from IOptions interface)
@@ -41,7 +46,10 @@ public static class InfrastructureServiceRegistration
                 sqlServerOptionsAction.CommandTimeout(databaseOptions.CommandTimeout);// time to execute a command and generate an error
 
                 sqlServerOptionsAction.EnableRetryOnFailure(databaseOptions.MaxRetryCount); // Max number of time to try to reconnect 
-            });
+            })
+            // adding interceptors (can be maded in the db context configuration or here / the position of the interceptors matter )
+            .AddInterceptors(serviceProvider.GetRequiredService<AuditableEntititesInterceptor>())
+            .AddInterceptors(serviceProvider.GetRequiredService<EnforcedUserRoleInterceptor>());
 
             if (environment.IsDevelopment()) // can check if the enviroment is in production
             {
@@ -50,13 +58,13 @@ public static class InfrastructureServiceRegistration
 
                 options.EnableSensitiveDataLogging(databaseOptions.EnableSensitiveDataLogging);
             }
-
-            //Register and Adding the triggers from assembly
-            options.UseTriggers(triggersOptions => triggersOptions.AddAssemblyTriggers());
         });
 
         // Adding the HttpContext
         services.AddHttpContextAccessor();
+
+        // Adding MemoryCaching
+        services.AddMemoryCache();
 
         // Adding Dependencies to the DI Container
         services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -74,6 +82,8 @@ public static class InfrastructureServiceRegistration
         services.AddTransient<IShippingMethodRepository, ShippingMethodRepository>();
         services.AddTransient<ICountryRepository, CountryRepository>();
         services.AddTransient<ICategoryRepository, CategoryRepository>();
+        services.AddTransient<IUserActivityRepository, UserActivityRepository>();
+        services.AddSingleton<ICacheService, CacheService>();
 
         //Adding the Custom Delegating Handlers to the DI Container
         services.AddTransient<LoggingHandler>();
