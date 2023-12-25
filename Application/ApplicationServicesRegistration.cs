@@ -17,6 +17,7 @@ public static class ApplicationServicesRegistration
             options.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>)); // <,> => mean that all that enter is allow
             options.AddBehavior(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
             options.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+            options.AddBehavior(typeof(IPipelineBehavior<,>), typeof(QueryCachingPipelineBehavior<,>));
         });
 
         //Registering the validations => Transient
