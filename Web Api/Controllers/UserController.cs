@@ -1,5 +1,7 @@
 ﻿using Application.Features.Users.Commands.Login;
 using Application.Features.Users.Commands.Register;
+using Application.Features.Users.Queries.GetUserByUsername;
+using Domain;
 using Domain.Common.Response;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +32,12 @@ namespace Web_Api.Controllers
                                                                  CancellationToken cancellationToken = default)
         {
             return Ok(await _mediator.Send(new LoginUserCommand(username, password),cancellationToken));
+        }
+
+        [HttpGet("user/userbyusername")]
+        public async Task<ActionResult<User>> GetUserByUsername(string username)
+        {
+            return Ok(await _mediator.Send(new GetUserByUsernameQuery(username)));
         }
     }
 }
