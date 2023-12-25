@@ -25,7 +25,7 @@ public class CategoryRepository : GenericRepository<Category>, ICategoryReposito
            new Category(){CategoryName = "Clothing",Description = "Clothing" }
         };
 
-        _context.Category.AddRange(categories);
+        AddRange(categories);
 
         await _unitOfWork.SaveChangesAsync();
     }

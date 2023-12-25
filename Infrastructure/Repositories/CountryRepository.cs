@@ -25,7 +25,7 @@ public class CountryRepository : GenericRepository<Country>, ICountryRepository
 
         ICollection<Country> countries = result.ToCountry();
 
-        _context.Country.AddRange(countries);
+        AddRange(countries);
 
         await _unitOfWork.SaveChangesAsync();
     }

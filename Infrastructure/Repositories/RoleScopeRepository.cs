@@ -3,7 +3,7 @@ using Domain;
 using Domain.Common.Enum;
 using Infrastructure.Common;
 using Infrastructure.Persistence;
-using Infrastructure.Specifications;
+using Infrastructure.Specifications.Roles;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
@@ -19,7 +19,7 @@ public class RoleScopeRepository : GenericRepository<RoleScope>, IRoleScopeRepos
                                                       UserScope userScope,
                                                       CancellationToken cancellationToken = default)
     {
-        return await ApplySpecification(new CombinationRoleNameAndScopeSpecification(roles, rolesScope))
+        return await ApplySpecification(new CombinationRoleNameAndScope(roles, rolesScope))
                                         .AnyAsync(roleScope => roleScope.Scope!.ScopeName == rolesScope[userScope],cancellationToken);
     }
 }

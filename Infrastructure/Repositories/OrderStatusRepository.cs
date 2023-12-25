@@ -16,7 +16,7 @@ public class OrderStatusRepository : GenericRepository<OrderStatus>, IOrderStatu
 
     public async Task AddDefaultOrderStatusAsync()
     {
-        ICollection<OrderStatus> orderStatuses = new HashSet<OrderStatus>()
+        ICollection<OrderStatus> ordersStatus = new HashSet<OrderStatus>()
         {
             new OrderStatus(){StatusName = "Processing" },
             new OrderStatus(){StatusName = "Shipped" },
@@ -24,7 +24,7 @@ public class OrderStatusRepository : GenericRepository<OrderStatus>, IOrderStatu
             new OrderStatus(){StatusName = "Canceled" }
         };
 
-        _context.OrderStatus.AddRange(orderStatuses);
+        AddRange(ordersStatus);
 
         await _unitOfWork.SaveChangesAsync();
     }

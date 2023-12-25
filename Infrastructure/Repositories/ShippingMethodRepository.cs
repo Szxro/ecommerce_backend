@@ -23,7 +23,7 @@ public class ShippingMethodRepository : GenericRepository<ShippingMethod>, IShip
             new ShippingMethod(){MethodName = "Ocean Freight (International)", Price = 180}
         };
 
-        _context.ShippingMethod.AddRange(shippingMethods);
+        AddRange(shippingMethods);
 
         await _unitOfWork.SaveChangesAsync();
     }

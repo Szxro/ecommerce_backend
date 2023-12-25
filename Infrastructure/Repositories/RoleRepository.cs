@@ -2,7 +2,7 @@
 using Domain;
 using Infrastructure.Common;
 using Infrastructure.Persistence;
-using Infrastructure.Specifications;
+using Infrastructure.Specifications.Roles;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
@@ -93,7 +93,7 @@ public class RoleRepository : GenericRepository<Role>, IRoleRepository
                }
             };
 
-        _context.Role.AddRange(roles);
+        AddRange(roles);
 
         await _unitOfWork.SaveChangesAsync();
     }
@@ -101,14 +101,14 @@ public class RoleRepository : GenericRepository<Role>, IRoleRepository
     public async Task<int> CountRolesAsync(List<string> roles,CancellationToken cancellationToken = default)
     {
         return await ApplySpecification(new CountRolesSpecification(roles))
-                                        .Select(role => role.RoleName)
-                                        .Distinct()
+                                        .GroupBy(role => role.RoleName)
+                                        .Select(role => role)
                                         .CountAsync(cancellationToken);
     }
 
     public async Task<Role?> GetRoleByRoleNameAsync(string roleName,CancellationToken cancellationToken = default)
     {
-        return await ApplySpecification(new GetRoleByRoleNameSpecification(roleName))
+        return await ApplySpecification(new GetRoleByRoleName(roleName))
                                         .Select(role => new Role()
                                         {
                                             Id = role.Id,
