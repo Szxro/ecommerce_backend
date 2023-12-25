@@ -1,7 +1,6 @@
 ﻿using Domain;
-using Infrastructure.Common;
 
-namespace Infrastructure.Specifications;
+namespace Infrastructure.Specifications.Roles;
 
 public class CountRolesSpecification : Specification<Role>
 {
