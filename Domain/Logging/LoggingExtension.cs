@@ -60,4 +60,12 @@ public static partial class LoggingExtension
         Message = "An error ocurred trying to make a http request to {uri} with the following message: {message}"
         )]
     public static partial void HttpRequestError(this ILogger logger,string uri,string message);
+
+
+    [LoggerMessage(
+        EventId = 7,
+        EventName = "Caching Warning",
+        Level = LogLevel.Warning,
+        Message = "Starting cahing or getting the value from cache with the key of {key}")]
+    public static partial void CachingWarning(this ILogger logger, string key);
 }
