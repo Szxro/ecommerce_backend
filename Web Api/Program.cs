@@ -1,5 +1,6 @@
 using Application;
 using Infrastructure;
+using Infrastructure.Extensions;
 using Web_Api.Extensions;
 using Web_Api.Middleware;
 
