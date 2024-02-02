@@ -1,23 +1,20 @@
 ﻿using Application.Common.DelegatingHandlers;
 using Application.Common.Interfaces;
-using Infrastructure.Common;
+using FluentValidation;
+using Infrastructure.Extensions;
 using Infrastructure.Interceptors;
 using Infrastructure.Options.Country;
 using Infrastructure.Options.Database;
 using Infrastructure.Options.Hash;
 using Infrastructure.Options.JWT;
 using Infrastructure.Persistence;
-using Infrastructure.Repositories;
 using Infrastructure.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using System.Reflection;
 
 namespace Infrastructure;
 
@@ -26,11 +23,22 @@ public static class InfrastructureServiceRegistration
     public static IServiceCollection AddInfrastructure(this IServiceCollection services,
                                                        IWebHostEnvironment environment)
     {
-        //Adding the Configuration
-        services.ConfigureOptions<DatabaseOptionsSetup>();
-        services.ConfigureOptions<HashOptionsSetup>();
-        services.ConfigureOptions<JwtOptionsSetup>();
-        services.ConfigureOptions<CountryOptionsSetup>();
+        //Adding the Configuration and validator
+        services.ConfigureOptions<DatabaseOptionsSetup>()
+                .AddFluentValidator<DatabaseOptions>();
+
+        services.ConfigureOptions<HashOptionsSetup>()
+                .AddFluentValidator<HashOptions>();
+
+        services.ConfigureOptions<JwtOptionsSetup>()
+                .AddFluentValidator<JwtOptions>();
+
+        services.ConfigureOptions<CountryOptionsSetup>()
+                .AddFluentValidator<CountryOptions>();
+
+        // Adding the validators of fluent validations and need to change the service lifetime to singleton or need to inject the IServiceScopeFactory or IServiceProvider and Create a scoped service instance
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        // Default lifetime (scoped)
 
         // Registering the interceptors 
         services.AddSingleton<AuditableEntititesInterceptor>();
@@ -51,7 +59,7 @@ public static class InfrastructureServiceRegistration
             .AddInterceptors(serviceProvider.GetRequiredService<AuditableEntititesInterceptor>())
             .AddInterceptors(serviceProvider.GetRequiredService<EnforcedUserRoleInterceptor>());
 
-            if (environment.IsDevelopment()) // can check if the enviroment is in production
+            if (environment.IsDevelopment()) // can check if the enviroment is in development
             {
                 // more detailed messages and logs (these options must only be active in dev)
                 options.EnableDetailedErrors(databaseOptions.EnableDetailedErrors);
@@ -67,24 +75,8 @@ public static class InfrastructureServiceRegistration
         services.AddMemoryCache();
 
         // Adding Dependencies to the DI Container
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddTransient<IAppDbInitializer, AppDbInitializer>();
-        services.AddTransient<IUserRepository, UserRepository>();
-        services.AddTransient<IRoleRepository, RoleRepository>();
-        services.AddTransient<IRoleScopeRepository, RoleScopeRepository>();
-        services.AddTransient<IUserRoleRepository, UserRoleRepository>();
-        services.AddTransient<IPasswordService, PasswordService>();
-        services.AddTransient<IDateService, DateService>();
-        services.AddTransient<ITokenService, TokenService>();
-        services.AddTransient<ICurrentUserService, CurrentUserService>();
-        services.AddTransient<IPaymentTypeRepository, PaymentTypeRepository>();
-        services.AddTransient<IOrderStatusRepository, OrderStatusRepository>();
-        services.AddTransient<IShippingMethodRepository, ShippingMethodRepository>();
-        services.AddTransient<ICountryRepository, CountryRepository>();
-        services.AddTransient<ICategoryRepository, CategoryRepository>();
-        services.AddTransient<IUserActivityRepository, UserActivityRepository>();
-        services.AddSingleton<ICacheService, CacheService>();
-
+        services.AddRepositoriesAndServices();
+       
         //Adding the Custom Delegating Handlers to the DI Container
         services.AddTransient<LoggingHandler>();
 
@@ -97,50 +89,6 @@ public static class InfrastructureServiceRegistration
 
             // can add more configuration to the client here
         }).AddHttpMessageHandler<LoggingHandler>();
-
-        return services;
-    }
-
-    public static async Task InitializeDatabaseAsync(this IServiceProvider serviceProvider)
-    {
-        //Creating a scope instance
-        using var scope = serviceProvider.CreateScope();
-
-        //Creating a service instance with the scope instance
-        var initializer = scope.ServiceProvider.GetRequiredService<IAppDbInitializer>();
-
-        //Running the methods
-        await initializer.ConnectAsync();
-
-        await initializer.MigrateAsync();
-
-        await initializer.SeedAsync();
-    }
-
-    public static IServiceCollection AddInfrastructureAuthentication(this IServiceCollection services,IConfiguration config)
-    {
-        //Adding the Authentication
-        services.AddAuthentication(options =>
-        {
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
-        {
-            //Validation parameters
-            options.TokenValidationParameters = new TokenValidationParameters()
-            {
-                ValidateAudience = true,
-                ValidateIssuer = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = config["JWTOptions:ValidIssuer"],
-                ValidAudience = config["JWTOptions:ValidAudience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config["JWTOptions:SecretKey"]!)),
-                ClockSkew = TimeSpan.FromSeconds(5) // must override (validating time) (default one is 5 min)
-            };
-        });
 
         return services;
     }
