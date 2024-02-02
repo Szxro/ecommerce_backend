@@ -8,7 +8,7 @@ public class DatabaseOptionsSetup : BaseSetup<DatabaseOptions>
 
     public override void Configure(DatabaseOptions options)
     {
-        options.ConnectionString = _configuration.GetConnectionString("default")!;
+        options.ConnectionString = _configuration.GetConnectionString("default");
 
         base.Configure(options);
     }
